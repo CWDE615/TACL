@@ -27,17 +27,21 @@ To request a feature or report bugs, please use our gitHub page.
 
 // include the cxxopts library available at
 // https://github.com/jarro2783/cxxopts/tree/2_1
-#include <cxxopts.hpp> // implicitly includes several STL containers
+#include "cxxopts.hpp" // implicitly includes several STL containers
+#include "AvlTree.hpp" // Avl tree implementation
+#include "MapSet.hpp"  // map of sets for search
+#include "PriorityQueue.hpp" // priority queue implementations
+
 
 int main(int argc, char* argv[])
 {
 	cxxopts::Options menu("Text Analysis Via Command Line (TACL)", "Simple text analysis functionality via the command line");
 
-	options.add_options("File IO")
+	menu.add_options("File IO")
 		("l,load_file", "Load File for Analysis", cxxopts::value<std::string>())
 		("o,output_file", "Set the Name of File for Output", cxxopts::value<std::string>()->default_value("TACL.txt"))
 		;
-	options.add_options("Operations")
+	menu.add_options("Operations")
 	    ("f,word_frequency_heap","Operation set to Word Frequency through a Heap")
 	    ("word_frequency_vector","Operation set to Word Frequency through a Linear Priority Queue")
 	    ("search_avl","Operation set to Search with an AVL Tree")
@@ -48,20 +52,20 @@ int main(int argc, char* argv[])
 	    ("r,replace_map", "Operation set to Replacement with an Unordered Map of Sets")
 	    ;
 	
-	options.help({ "File IO" , "Operations" });
+	menu.help({ "File IO" , "Operations" });
 
-	auto parsed = options.parse(argc, argv);
+	auto parsed = menu.parse(argc, argv);
 
 	if (parsed.count("input") == 1)
 	{
-		string input = parsed["l"].as<string>();
+		std::string input = parsed["l"].as<std::string>();
 	}
 	else
 	{
 		std::cout << "Error: Must specify exactly one input file." << std::endl;
 	}
 
-	string output = parsed["o"].as<string>();
+	std::string output = parsed["o"].as<std::string>();
 
 	// set a bool for each of the operations to false
 	// in an ops vector
@@ -69,7 +73,7 @@ int main(int argc, char* argv[])
 	std::vector<bool> arr(OP_COUNT, false);
 	std::vector<std::string> ops = { "word_frequency_heap", "word_frequency_vector", "search_avl", "extract_avl",
 	"extract_map","replace_avl","replace_map" };
-	unorded_map<int, std::string> op_map;
+	std::unordered_map<int, std::string> op_map;
 	
 	for (int h = 0; h < OP_COUNT; h++)
 		op_map[h] = ops[h];
