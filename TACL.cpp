@@ -27,7 +27,7 @@ To request a feature or report bugs, please use our gitHub page.
 
 // include the cxxopts library available at
 // https://github.com/jarro2783/cxxopts/tree/2_1
-#include "cxxopts.hpp"; // implicitly includes several STL containers
+#include <cxxopts.hpp> // implicitly includes several STL containers
 
 int main(int argc, char* argv[])
 {
@@ -35,7 +35,7 @@ int main(int argc, char* argv[])
 
 	options.add_options("File IO")
 		("l,load_file", "Load File for Analysis", cxxopts::value<std::string>())
-		("o,output_file", "Set the Name of File for Output", cxxopts::value<std::string>())
+		("o,output_file", "Set the Name of File for Output", cxxopts::value<std::string>()->default_value("TACL.txt"))
 		;
 	options.add_options("Operations")
 	    ("f,word_frequency_heap","Operation set to Word Frequency through a Heap")
@@ -50,7 +50,74 @@ int main(int argc, char* argv[])
 	
 	options.help({ "File IO" , "Operations" });
 
-	auto parsed = options.parse()argc, argv);
+	auto parsed = options.parse(argc, argv);
 
+	if (parsed.count("input") == 1)
+	{
+		string input = parsed["l"].as<string>();
+	}
+	else
+	{
+		std::cout << "Error: Must specify exactly one input file." << std::endl;
+	}
 
+	string output = parsed["o"].as<string>();
+
+	// set a bool for each of the operations to false
+	// in an ops vector
+	const int OP_COUNT = 8;
+	std::vector<bool> arr(OP_COUNT, false);
+	std::vector<std::string> ops = { "word_frequency_heap", "word_frequency_vector", "search_avl", "extract_avl",
+	"extract_map","replace_avl","replace_map" };
+	unorded_map<int, std::string> op_map;
+	
+	for (int h = 0; h < OP_COUNT; h++)
+		op_map[h] = ops[h];
+
+	// sets the appropriate elements of the ops vector to true
+	// others remain false. This method allows the user to specify multiple operations
+	// at once.
+	for (int i = 0; i < OP_COUNT; i++)
+		if (parsed.count(op_map[i]))
+			arr[i] = parsed[op_map[i]].as<bool>();
+
+	for (int j = 0; j < OP_COUNT; j++)
+	{
+		if (!arr[j])
+			continue;
+
+		switch (j)
+		{
+		case 0:
+			// wfh
+			break;
+		case 1:
+			// wfv
+			break;
+		case 2:
+			// savl
+			break;
+		case 3:
+			// smap
+			break;
+		case 4:
+			// eavl
+			break;
+		case 5:
+			// emap
+			break;
+		case 6:
+			// ravl
+			break;
+		case 7:
+			//rmap
+			break;
+		default:
+			// error? not really possible though
+			break;
+		}
+	}
+
+	return 0;
+	
 }
