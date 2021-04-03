@@ -34,13 +34,14 @@ namespace tacl
 {
     /* code in this file is resused from CW Ellis' submssion in Project 1. Retooled to use templates instead of just ints */
     // make an AVL based map
+    template<typename K,typename V>
     class Map
     {
         struct Node
         {
             // members of the node class. As a convention, names of all member variables in this implementation start with m_
-            std::string m_name;  // the name of the node
-            long m_id;      // their id
+            V m_val;  // the name of the node
+            K m_id;      // their id
             int m_bal;      // the node's current balance
             int m_height;   // the node's current height
             Node* m_left;   // left and right child pointers
@@ -96,7 +97,8 @@ namespace tacl
     // This function has no loops and only calls O(1) time functions of the root node. This, with a little further examination reveals that the function's runtime
     // is O(1) in any case, as the worst case is O(1), and the other two cases, such as the best where the root is null, are just constant
     // time improvement 
-    Map::Node* Map::checkRotation(Node* root)
+    template<typename K, typename V>
+    Map<K, V>::Node* Map<K,V>::checkRotation(Node* root) // sus
     {
         if (root != nullptr)
         {
@@ -128,7 +130,8 @@ namespace tacl
     // checkRotations is a function that checks the rotation of the left and right children of the passed root for their balance and performs
     // appropriate rotations, if they are needed. It just calls the constant time checkRotations() function and is therefore a constant time function itself,
     // as it will call an O(1) operation a constant number of times.
-    void Map::checkRotations(Node* root)
+    template<typename K, typename V>
+    void Map<K, V>::checkRotations(Node* root)
     {
         root->m_left = checkRotation(root->m_left);   // rotates and reassigns the left child, if needed
         root->m_right = checkRotation(root->m_right); // rotates and reassigns the right child, if needed
@@ -143,7 +146,8 @@ namespace tacl
     // in the resrouces for that assignment. These clearly run in O(1) in any case,
     // for the rotation occurs in a clearly constant time, and the only other operations
     // are calling four other constant time functions
-    Map::Node* Map::leftRotation(Node* root)
+    template<typename K,typename V>
+    Map<K,V>::Node* Map<K,V>::leftRotation(Node* root)
     {
         Node* top = root;     // set a temp pointer to the roots location
         root = root->m_right; // the root is then set to its right child
@@ -162,7 +166,8 @@ namespace tacl
         return root; // returns the root, which is now the top of the balanced structure
     }
 
-    Map::Node* Map::rightRotation(Node* root) // works like left rotation but mirrored
+    template<typename K, typename V>
+    Map<K,V>::Node* Map<K,V>::rightRotation(Node* root) // works like left rotation but mirrored
     {
         Node* top = root;
         root = root->m_left;
@@ -181,14 +186,16 @@ namespace tacl
     }
 
     // leftRightRotation is also an adaptation from my solution to Stepik exercise 5.1.1
-    Map::Node* Map::leftRightRotation(Node* root)   // left-right rotation is merely a two step left then right rotation
+    template<typename K, typename V>
+    Map<K,V>::Node* Map<K,V>::leftRightRotation(Node* root)   // left-right rotation is merely a two step left then right rotation
     {
         root->m_left = leftRotation(root->m_left); // left rotation of the left node
         return rightRotation(root);                // returns a right rotation of the current node
     }
 
     // because right-left rotation is a mirror of left-right rotation, this too is adapted from 5.1.1
-    Map::Node* Map::rightLeftRotation(Node* root)
+    template<typename K, typename V>
+    Map<K,V>::Node* Map<K,V>::rightLeftRotation(Node* root)
     {
         root->m_right = rightRotation(root->m_right);
         return leftRotation(root);
@@ -198,7 +205,8 @@ namespace tacl
     // to avoid memory leakage during testing/grading, a destructor is defined for the class and uses this function to deallocate memory.
     // This uses a postorder traversal to visit each node in the tree a single time, and is therefore O(n) time for any case, with n being the number
     // of nodes in the tree.
-    void Map::delTree(Node* root)
+    template<typename K, typename V>
+    void Map<K,V>::delTree(Node* root)
     {
         if (root != nullptr)
         {
@@ -211,7 +219,8 @@ namespace tacl
     // fill a vector of ids using an inorder traversal
     // runs in O(n) in any case, where n is the number of nodes in the subtree whose root is passed
     // for any case as all nodes are visited once and placed into the vector.
-    void Map::fillIdsInOrder(Node* root, std::vector<long>& ids) const
+    template<typename K, typename V>
+    void Map<K,V>::fillIdsInOrder(Node* root, std::vector<long>& ids) const
     {
         if (root != nullptr)
         {
@@ -225,7 +234,8 @@ namespace tacl
     // since it only goes through the left children of the root and calls 2 O(1) functions, it is O(h) where h is the height of the given subtree
     // with root root, instead of linear with the number of nodes in that tree in any case. h ~ O(log(n)) for the number of nodes n, so we can expect
     // that the function is O(log(n)).
-    void Map::removeBalHeightFixer(Node* root)
+    template<typename K, typename V>
+    void Map<K,V>::removeBalHeightFixer(Node* root)
     {
         if (root != nullptr)
         {
@@ -237,7 +247,8 @@ namespace tacl
 
     // Runs in the same time as the isBalanced function below it.
     // citation
-    bool Map::isBalanced() const
+    template<typename K, typename V>
+    bool Map<K,V>::isBalanced() const
     {
         return isBalanced(m_root);
     }
@@ -246,7 +257,8 @@ namespace tacl
     // preorder traversal of the tree in any case but the base case or imbalance. Therefore, the worst case would be the one in which all nodes were checked for
     // their balance, which implies O(n). The best case, however, is going to be the one in which the root fails to be balanced. In this case, it fails immediately
     // and is therefore O(1).
-    bool Map::isBalanced(Node* root) const
+    template<typename K, typename V>
+    bool Map<K,V>::isBalanced(Node* root) const
     {
         if (root == nullptr)
             return true;
@@ -257,10 +269,12 @@ namespace tacl
     }
 
     // constructor of the AvlTree class. It is a constant time operation
-    Map::Map() : m_root(nullptr) {}; // initialize root to null
+    template<typename K, typename V>
+    Map<K,V>::Map() : m_root(nullptr) {}; // initialize root to null
 
     // destructor of the AvlTree class 
-    Map::~Map()
+    template<typename K, typename V>
+    Map<K,V>::~Map()
     {
         delTree(m_root);
         m_root = nullptr; // set m_root to null following the tree's deletion
@@ -268,7 +282,8 @@ namespace tacl
 
     // return true if insertion successful. Implementation of insertion adapted from
     // my solution to Stepik exercise 4.3.2. Rotations adapted from my solution to 5.1.1
-    bool Map::insert(std::string name, long id, Node* root)
+    template<typename K, typename V>
+    bool Map<K,V>::insert(std::string name, long id, Node* root)
     {
         if (root == nullptr)
         {
@@ -318,14 +333,16 @@ namespace tacl
 
     // interface for inserting elements into the tree. Technically runs in O(s + log(n)), for the length of the name s and number of nodes already in the tree n 
     // in the worst case and O(1) in the best case, as either can fail immediately and result in a best case complexity of O(1).
-    bool Map::insert(std::string name, long id)
+    template<typename K, typename V>
+    bool Map<K,V>::insert(std::string name, long id)
     {
         return insert(name, id, m_root);
     }
 
 
     // removes a node from the tree.
-    bool Map::remove(long id, Node* root)
+    template<typename K, typename V>
+    bool Map<K,V>::remove(long id, Node* root)
     {
         if (root == nullptr)        // this will only happen in the case that there is no node in the AVL with the given id
             return false;
@@ -387,7 +404,8 @@ namespace tacl
     // category. In this case, the complexity is found by analyizing the fact that O(log(r)), where r is the number of nodes in the root's right subtree,
     // operations are required to find the root's inoreder successor, the fact that the functions calcHeight and calcBal are O(1) and that the function removeBalHeightFixer is O(log(r)) in any case itself.
     // This means that the whole operation would be bounded by log(r) and thus O(log(r)) represents a worst case complexity for the remover function.
-    Map::Node* Map::remover(Node* root)
+    template<typename K, typename V>
+    Map<K,V>::Node* Map<K,V>::remover(Node* root)
     {
         if (root->m_left != nullptr && root->m_right != nullptr) // if the node has two chldren
         {
@@ -442,13 +460,15 @@ namespace tacl
     }
 
     // removal interface. Runs in the same cases as remove as idValidation is a constant time function.
-    bool Map::remove(long id)
+    template<typename K, typename V>
+    bool Map<K,V>::remove(long id)
     {
         return remove(id, m_root);
     }
 
     // search for student by id. Simple BST searching algorithm based on the assumption that the ids are unique.
-    std::string Map::search(long id, Node* root) const
+    template<typename K, typename V>
+    std::string Map<K,V>::search(long id, Node* root) const
     {
         if (root == nullptr)
             return "unsuccessful";            // return unsuccessful if not found
@@ -462,30 +482,35 @@ namespace tacl
 
     // search for an element by its id. Runs in O(log(n)) in the worst case, as it calls the id-based search function and O(1) in the best case, for idValidation
     // is O(1) in any case.
-    std::string Map::search(long id) const
+    template<typename K, typename V>
+    std::string Map<K,V>::search(long id) const
     {
         return search(id, m_root);
     }
 
-    int Map::countLevels()
+    template<typename K, typename V>
+    int Map<K,V>::countLevels()
     {
         return Node::getHeight(m_root);
     }
 
     // simply calls the fillIdsInOrder function, which runs in O(n)
-    void Map::fillIdsInOrder(std::vector<long>& ids) const
+    template<typename K, typename V>
+    void Map<K,V>::fillIdsInOrder(std::vector<long>& ids) const
     {
         fillIdsInOrder(m_root, ids);
     }
 
     // constructors of the node class. Both use initialization lists and need only calculate m_bal after that.
-    Map::Node::Node(Node* l, Node* r) : m_name(""), m_left(l), m_right(r)
+    template<typename K, typename V>
+    Map<K,V>::Node::Node(Node* l, Node* r) : m_name(""), m_left(l), m_right(r)
     {
         calcHeight();
         calcBal();
     }
 
-    Map::Node::Node(std::string n, long id, Node* l, Node* r) : m_name(n), m_id(id), m_left(l), m_right(r)
+    template<typename K, typename V>
+    Map<K,V>::Node::Node(std::string n, long id, Node* l, Node* r) : m_name(n), m_id(id), m_left(l), m_right(r)
     {
         calcHeight();
         calcBal();
@@ -493,7 +518,8 @@ namespace tacl
 
     // getHeight appeared as a recursvie function in my solution to Stepik exercise 5.2.1. This, however, uses the m_height's of child nodes
     // to accomplish the same task in constant time, also with an algorithm infromed by slide 18 of the Trees-1 slides
-    int Map::Node::getHeight(Node* node)
+    template<typename K, typename V>
+    int Map<K,V>::Node::getHeight(Node* node)
     {
         if (node == nullptr)
             return 0;              // return 0 if the node is null
@@ -503,13 +529,15 @@ namespace tacl
     }
 
     // functionality has been split in two here, one as a static and on as a const member function of the node struct
-    int Map::Node::getHeight() const
+    template<typename K, typename V>
+    int Map<K,V>::Node::getHeight() const
     {
         return m_height;
     }
 
     // calculate and return the height of the current node. Runs in O(1) time.
-    int Map::Node::calcHeight()
+    template<typename K, typename V>
+    int Map<K,V>::Node::calcHeight()
     {
         if (m_left != nullptr && m_right != nullptr)      // both children exist
             m_height = 1 + std::max(m_left->m_height, m_right->m_height);              // return the max of its children's heights
@@ -522,7 +550,8 @@ namespace tacl
     }
 
     // calcBal appeared with some differences in my solution to Stepik exercise 5.2.1. Runs in O(1) time
-    int Map::Node::calcBal()
+    template<typename K, typename V>
+    int Map<K,V>::Node::calcBal()
     {
         m_bal = getHeight(m_left) - getHeight(m_right); // sets m_bal. Enforces the left-right convention for this implementation
                                                         // uses static getHeight to catch null pointers and avoid seg faults
