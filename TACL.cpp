@@ -26,12 +26,7 @@ To request a feature or report bugs, please use our gitHub page.
 */
 
 // include the cxxopts library available at
-// https://github.com/jarro2783/cxxopts/tree/2_1
-#include "cxxopts.hpp" // implicitly includes several STL containers
-#include "AvlTree.hpp" // Avl tree implementation
-#include "MapSet.hpp"  // map of sets for search
-#include "PriorityQueue.hpp" // priority queue implementations
-
+#include "includes.hpp"
 
 int main(int argc, char* argv[])
 {
