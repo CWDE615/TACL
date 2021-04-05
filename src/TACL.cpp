@@ -25,7 +25,9 @@ This project was created by the members of Lucky13 for our final project in COP3
 To request a feature or report bugs, please use our gitHub page.
 */
 
-// include the cxxopts library available at
+// include the cxxopts library available at 
+// https://github.com/jarro2783/cxxopts/tree/2_1
+#include <exception>
 #include "includes.hpp"
 
 int main(int argc, char* argv[])
@@ -50,17 +52,18 @@ int main(int argc, char* argv[])
 	menu.help({ "File IO" , "Operations" });
 
 	auto parsed = menu.parse(argc, argv);
+	std::string input, output;
 
-	if (parsed.count("input") == 1)
+	if (parsed.count("input") == 1 && parsed.count("output") <= 1)
 	{
-		std::string input = parsed["l"].as<std::string>();
+		input = parsed["l"].as<std::string>();
 	}
 	else
 	{
-		std::cout << "Error: Must specify exactly one input file." << std::endl;
+		throw std::invalid_argument("Only one input and one output file name must be given.");
 	}
 
-	std::string output = parsed["o"].as<std::string>();
+	output = parsed["o"].as<std::string>();
 
 	// set a bool for each of the operations to false
 	// in an ops vector
@@ -88,31 +91,31 @@ int main(int argc, char* argv[])
 		switch (j)
 		{
 		case 0:
-			// wfh
+			tacl::wordFrequencyHeap(input, output);
 			break;
 		case 1:
-			// wfv
+			tacl::wordFrequencyVector(input, output);
 			break;
 		case 2:
-			// savl
+			tacl::searchAvl(input, output);
 			break;
 		case 3:
-			// smap
+			tacl::searchMap(input, output);
 			break;
 		case 4:
-			// eavl
+			tacl::extractAvl(input, output);
 			break;
 		case 5:
-			// emap
+			tacl::extractMap(input, output);
 			break;
 		case 6:
-			// ravl
+			tacl::replaceAvl(input, output);
 			break;
 		case 7:
-			//rmap
+			tacl::replaceMap(input, output);
 			break;
 		default:
-			// error? not really possible though
+			throw std::exception("Operation does not exist.");
 			break;
 		}
 	}

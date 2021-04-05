@@ -96,7 +96,7 @@ namespace tacl
     // is O(1) in any case, as the worst case is O(1), and the other two cases, such as the best where the root is null, are just constant
     // time improvement 
     template<typename K, typename V>
-    Map<K, V>::Node* Map<K,V>::checkRotation(Node* root) // sus
+    typename Map<K,V>::Node* Map<K,V>::checkRotation(Node* root) // sus
     {
         if (root != nullptr)
         {
@@ -145,7 +145,7 @@ namespace tacl
     // for the rotation occurs in a clearly constant time, and the only other operations
     // are calling four other constant time functions
     template<typename K,typename V>
-    Map<K,V>::Node* Map<K,V>::leftRotation(Node* root)
+    typename Map<K,V>::Node* Map<K,V>::leftRotation(Node* root)
     {
         Node* top = root;     // set a temp pointer to the roots location
         root = root->m_right; // the root is then set to its right child
@@ -165,7 +165,7 @@ namespace tacl
     }
 
     template<typename K, typename V>
-    Map<K,V>::Node* Map<K,V>::rightRotation(Node* root) // works like left rotation but mirrored
+    typename Map<K,V>::Node* Map<K,V>::rightRotation(Node* root) // works like left rotation but mirrored
     {
         Node* top = root;
         root = root->m_left;
@@ -185,7 +185,7 @@ namespace tacl
 
     // leftRightRotation is also an adaptation from my solution to Stepik exercise 5.1.1
     template<typename K, typename V>
-    Map<K,V>::Node* Map<K,V>::leftRightRotation(Node* root)   // left-right rotation is merely a two step left then right rotation
+    typename Map<K,V>::Node* Map<K,V>::leftRightRotation(Node* root)   // left-right rotation is merely a two step left then right rotation
     {
         root->m_left = leftRotation(root->m_left); // left rotation of the left node
         return rightRotation(root);                // returns a right rotation of the current node
@@ -193,7 +193,7 @@ namespace tacl
 
     // because right-left rotation is a mirror of left-right rotation, this too is adapted from 5.1.1
     template<typename K, typename V>
-    Map<K,V>::Node* Map<K,V>::rightLeftRotation(Node* root)
+    typename Map<K,V>::Node* Map<K,V>::rightLeftRotation(Node* root)
     {
         root->m_right = rightRotation(root->m_right);
         return leftRotation(root);
@@ -403,7 +403,7 @@ namespace tacl
     // operations are required to find the root's inoreder successor, the fact that the functions calcHeight and calcBal are O(1) and that the function removeBalHeightFixer is O(log(r)) in any case itself.
     // This means that the whole operation would be bounded by log(r) and thus O(log(r)) represents a worst case complexity for the remover function.
     template<typename K, typename V>
-    Map<K,V>::Node* Map<K,V>::remover(Node* root)
+    typename Map<K,V>::Node* Map<K,V>::remover(Node* root)
     {
         if (root->m_left != nullptr && root->m_right != nullptr) // if the node has two chldren
         {
