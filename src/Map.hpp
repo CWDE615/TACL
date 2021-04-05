@@ -30,7 +30,7 @@ SOFTWARE.
 
 namespace tacl
 {
-    /* code in this file is resused from CW Ellis' submssion in Project 1. Retooled to use templates instead of just ints */
+    /* code in the rest of this file is retooled from CW Ellis' submssion to Project 1. It has been edited to use templates instead of just ints and strings */
     // make an AVL based map
     template<typename K,typename V>
     class Map
