@@ -38,7 +38,7 @@ namespace tacl
         struct Node
         {
             // members of the node class. As a convention, names of all member variables in this implementation start with m_
-            V m_val;  // the name of the node
+            V m_name;  // the name of the node
             K m_id;      // their id
             int m_bal;      // the node's current balance
             int m_height;   // the node's current height
@@ -47,7 +47,7 @@ namespace tacl
 
             // Node constructors
             Node(Node* l = nullptr, Node* r = nullptr);
-            Node(std::string n, long id, Node* l = nullptr, Node* r = nullptr);
+            Node(V n, K id, Node* l = nullptr, Node* r = nullptr);
             static int getHeight(Node* node);  // gets the height of the passed node
             int getHeight() const;
             int calcHeight();                  // recalculates and returns the height of a node
@@ -58,8 +58,8 @@ namespace tacl
 
         // Private helper functions
 
-        bool insert(std::string name, long id, Node* root); // insertion, removal and rotation
-        bool remove(long id, Node* root);
+        bool insert(V val, K id, Node* root); // insertion, removal and rotation
+        bool remove(K id, Node* root);
         Node* remover(Node* root);
         Node* checkRotation(Node* root);
         void checkRotations(Node* root);
@@ -69,11 +69,11 @@ namespace tacl
         Node* rightLeftRotation(Node* root);
 
         // search
-        std::string search(long id, Node* root) const;
+        std::string search(K id, Node* root) const;
 
         // Other helper functions
         void delTree(Node* root);
-        void fillIdsInOrder(Node* root, std::vector<long>& ids) const;
+        void fillIdsInOrder(Node* root, std::vector<K>& ids) const;
         void removeBalHeightFixer(Node* root);
 
     public:
@@ -81,12 +81,12 @@ namespace tacl
         ~Map();                    // AvlTree class destructor.
 
         // Public Member Functions
-        bool insert(std::string name, long id); // insertion and removals
-        bool remove(long id);
-        std::string search(long id) const;      // search by id
+        bool insert(K id, V name); // insertion and removals
+        bool remove(K id);
+        std::string search(K id) const;      // search by id
 
         int countLevels();                 // returns the number of levels in the tree
-        void fillIdsInOrder(std::vector<long>& ids) const; // gives a public overload of fillIdsInOrder for testing
+        void fillIdsInOrder(std::vector<K>& ids) const; // gives a public overload of fillIdsInOrder for testing
         bool isBalanced() const;
         bool isBalanced(Node* root) const; // test function to determine balance of the tree
     };
@@ -218,7 +218,7 @@ namespace tacl
     // runs in O(n) in any case, where n is the number of nodes in the subtree whose root is passed
     // for any case as all nodes are visited once and placed into the vector.
     template<typename K, typename V>
-    void Map<K,V>::fillIdsInOrder(Node* root, std::vector<long>& ids) const
+    void Map<K,V>::fillIdsInOrder(Node* root, std::vector<K>& ids) const
     {
         if (root != nullptr)
         {
@@ -281,7 +281,7 @@ namespace tacl
     // return true if insertion successful. Implementation of insertion adapted from
     // my solution to Stepik exercise 4.3.2. Rotations adapted from my solution to 5.1.1
     template<typename K, typename V>
-    bool Map<K,V>::insert(std::string name, long id, Node* root)
+    bool Map<K,V>::insert(V name, K id, Node* root)
     {
         if (root == nullptr)
         {
@@ -332,7 +332,7 @@ namespace tacl
     // interface for inserting elements into the tree. Technically runs in O(s + log(n)), for the length of the name s and number of nodes already in the tree n 
     // in the worst case and O(1) in the best case, as either can fail immediately and result in a best case complexity of O(1).
     template<typename K, typename V>
-    bool Map<K,V>::insert(std::string name, long id)
+    bool Map<K,V>::insert(K id, V name)
     {
         return insert(name, id, m_root);
     }
@@ -340,7 +340,7 @@ namespace tacl
 
     // removes a node from the tree.
     template<typename K, typename V>
-    bool Map<K,V>::remove(long id, Node* root)
+    bool Map<K,V>::remove(K id, Node* root)
     {
         if (root == nullptr)        // this will only happen in the case that there is no node in the AVL with the given id
             return false;
@@ -459,14 +459,14 @@ namespace tacl
 
     // removal interface. Runs in the same cases as remove as idValidation is a constant time function.
     template<typename K, typename V>
-    bool Map<K,V>::remove(long id)
+    bool Map<K,V>::remove(K id)
     {
         return remove(id, m_root);
     }
 
     // search for student by id. Simple BST searching algorithm based on the assumption that the ids are unique.
     template<typename K, typename V>
-    std::string Map<K,V>::search(long id, Node* root) const
+    std::string Map<K,V>::search(K id, Node* root) const
     {
         if (root == nullptr)
             return "unsuccessful";            // return unsuccessful if not found
@@ -481,7 +481,7 @@ namespace tacl
     // search for an element by its id. Runs in O(log(n)) in the worst case, as it calls the id-based search function and O(1) in the best case, for idValidation
     // is O(1) in any case.
     template<typename K, typename V>
-    std::string Map<K,V>::search(long id) const
+    std::string Map<K,V>::search(K id) const
     {
         return search(id, m_root);
     }
@@ -494,7 +494,7 @@ namespace tacl
 
     // simply calls the fillIdsInOrder function, which runs in O(n)
     template<typename K, typename V>
-    void Map<K,V>::fillIdsInOrder(std::vector<long>& ids) const
+    void Map<K,V>::fillIdsInOrder(std::vector<K>& ids) const
     {
         fillIdsInOrder(m_root, ids);
     }
@@ -508,7 +508,7 @@ namespace tacl
     }
 
     template<typename K, typename V>
-    Map<K,V>::Node::Node(std::string n, long id, Node* l, Node* r) : m_name(n), m_id(id), m_left(l), m_right(r)
+    Map<K,V>::Node::Node(V n, K id, Node* l, Node* r) : m_name(n), m_id(id), m_left(l), m_right(r)
     {
         calcHeight();
         calcBal();
@@ -557,9 +557,10 @@ namespace tacl
     }
 
     // prints ids in the passed vector reference. O(n), where n is the number of elements in the vector
-    void print(std::vector<long>& ids)
+    template<typename T>
+    void print(std::vector<T>& data)
     {
-        for (auto iter = ids.begin(); iter != ids.end(); iter++)
+        for (auto iter = data.begin(); iter != data.end(); iter++)
             std::cout << *iter << std::endl;
     }
 
