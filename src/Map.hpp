@@ -38,7 +38,7 @@ namespace tacl
         struct Node
         {
             // members of the node class. As a convention, names of all member variables in this implementation start with m_
-            V m_name;  // the name of the node
+            V m_name;    // the name of the node
             K m_id;      // their id
             int m_bal;      // the node's current balance
             int m_height;   // the node's current height
