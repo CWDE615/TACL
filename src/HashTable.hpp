@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <chrono>
 using namespace std;
 
 class HashTable
@@ -189,6 +190,12 @@ string HashTable::SearchKey(int key) {
 //Searches the table using a value. As there are more than likely multiple keys containing the same value it returns a vector of keys (which are the positions of the words).
 vector<int> HashTable::SearchValue(string value) {
 
+	cout << endl; //ensures spacing between key function printing
+	cout << "~~~HashTable Search~~~" << endl;
+
+	using namespace std::chrono;
+	auto start = high_resolution_clock::now(); //Times the function
+
 	vector<int> positionVector; //Loops through the table until the end of the table. As it goes along it constructs a vector of positions (keys) where the value is found.
 	for (int i = 0; i < tableSize; ++i) {
 		unsigned int hashVal = Hash(i);
@@ -198,15 +205,32 @@ vector<int> HashTable::SearchValue(string value) {
 			}
 		}
 	}
+
+	cout << "Found " << positionVector.size() << " instances of \"" << value << "\" within the HashTable! Key positions returned." << endl;
+
+	cout << "~~~HashTable Search~~~" << endl;
+	cout << endl;
+
+	auto end = high_resolution_clock::now();
+	auto duration = duration_cast<microseconds>(end - start);
+	cout << "HashTable value search run time in micro seconds: " << duration.count() << endl; //prints out how long it took the function to run
+
 	return positionVector;
 
 }
 //Removes the values from the table, along with their keys.
 void HashTable::RemoveValue(string value) {
+	
+	cout << endl;//ensures spacing between key function printing
+	cout << "~~~HashTable Removal~~~" << endl;
+
+	using namespace std::chrono;
+	auto start = high_resolution_clock::now(); //Times the function
 
 	bool exists = false;
 
 	cout << "Size of HashTable before removal: " << Size() << endl;
+	cout << "Attempting to remove \"" << value << "\"." << endl;
 
 	for (int i = 0; i < tableSize; ++i) { //Loops through the table and searches for the passed in value. When it finds the value it removes the element from the table.
 		int hashVal = Hash(i);
@@ -229,20 +253,43 @@ void HashTable::RemoveValue(string value) {
 	}
 	else if(exists) {
 		cout << "SUCCESS: Value Pair(s) Removed!" << endl;
-		cout << "Size of HashTable before removal: " << Size() << endl;
+		cout << "Size of HashTable after removal: " << Size() << endl;
 	}
+
+	cout << "~~~HashTable Removal~~~" << endl;
+	cout << endl;
+
+	auto end = high_resolution_clock::now();
+	auto duration = duration_cast<microseconds>(end - start);
+	cout << "HashTable value removal run time in micro seconds: " << duration.count() << endl; //prints out how long it took the function to run
 
 }
 //Replaces the passed in value within the table with a new passed in value.
 void HashTable::ReplaceValue(string value, string newValue) {
+
+	cout << endl;//ensures spacing between key function printing
+	cout << "~~~HashTable Replace~~~" << endl;
+
+	using namespace std::chrono;
+	auto start = high_resolution_clock::now(); //Times the function
+
+	unsigned int replacedCount = 0;
 
 	for (int i = 0; i < tableSize; ++i) { //Loops through the entire table and replaces each value it finds matching the passed in value with newValue.
 		unsigned int hashVal = Hash(i);
 		for (auto finder = table[hashVal].begin(); finder != table[hashVal].end(); finder++) { 
 			if (finder->second == value) { //if the second value within the pair (the string value or word) is equivalent to the passed in value then replace.
 				finder->second = newValue;
+				++replacedCount;
 			}
 		}
 	}
+	cout << "Replaced " << replacedCount << " values of \"" << value << "\" with \"" << newValue << "\"." << endl;
+	cout << "~~~HashTable Replace~~~" << endl;
+	cout << endl;
+
+	auto end = high_resolution_clock::now();
+	auto duration = duration_cast<microseconds>(end - start);
+	cout << "HashTable value replace run time in micro seconds: " << duration.count() << endl; //prints out how long it took the function to run
 
 }
