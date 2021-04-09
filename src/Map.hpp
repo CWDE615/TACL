@@ -56,6 +56,9 @@ namespace tacl
 
         Node* m_root; // root node
 
+        int m_size = 0; //number of nodes within the tree
+        int m_trueSize = 0;
+
         // Private helper functions
 
         bool insert(V val, K id, Node* root); // insertion, removal and rotation
@@ -89,6 +92,8 @@ namespace tacl
         void fillIdsInOrder(std::vector<K>& ids) const; // gives a public overload of fillIdsInOrder for testing
         bool isBalanced() const;
         bool isBalanced(Node* root) const; // test function to determine balance of the tree
+
+        int getSize();
     };
 
     // checks the rotation of a node
@@ -334,7 +339,11 @@ namespace tacl
     template<typename K, typename V>
     bool Map<K,V>::insert(K id, V name)
     {
-        return insert(name, id, m_root);
+        bool result = insert(name, id, m_root);
+        if (result) {
+            ++m_size;
+        }
+        return result;
     }
 
 
@@ -461,7 +470,11 @@ namespace tacl
     template<typename K, typename V>
     bool Map<K,V>::remove(K id)
     {
-        return remove(id, m_root);
+        bool result = remove(id, m_root);
+        if (result) {
+            m_size--;
+        }
+        return result;
     }
 
     // search for student by id. Simple BST searching algorithm based on the assumption that the ids are unique.
@@ -581,4 +594,9 @@ namespace tacl
         std::getline(std::cin, line);
         return line.substr(1, line.size() - 1);
     }
+    template<typename K, typename V>
+    int Map<K,V>::getSize() {
+        return m_size;
+    }
 }
+
