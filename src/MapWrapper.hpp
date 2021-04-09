@@ -6,6 +6,7 @@
 #include <chrono>
 #include <sstream>
 
+
 namespace tacl {
 
 
@@ -29,32 +30,32 @@ namespace tacl {
 
 	MapWrapper::MapWrapper(std::string words) {
 
-		cout << endl;
+		std::cout << std::endl;
 
 		using namespace std::chrono;
 		auto start = high_resolution_clock::now(); //Times the function
 
-		istringstream iss(words);
+		std::istringstream iss(words);
 		int counter = 0;
 
-		string word;
-		while (getline(iss, word, ' ')) {
+		std::string word;
+		while (std::getline(iss, word, ' ')) {
 			avlMap.insert(counter, word);
 			counter++;
 		}
 
 		auto end = high_resolution_clock::now();
 		auto duration = duration_cast<microseconds>(end - start);
-		cout << "AVLMap construction run time in micro seconds: " << duration.count() << endl; //prints out how long it took the function to run
+		std::cout << "AVLMap construction run time in micro seconds: " << duration.count() << std::endl; //prints out how long it took the function to run
 
 	}
 
 	void MapWrapper::searchMap(std::string value) {
 		
-		vector<int> positionVector;
+		std::vector<int> positionVector;
 
-		cout << endl; //ensures spacing between key function printing
-		cout << "~~~AVLMap Search~~~" << endl;
+		std::cout << std::endl; //ensures spacing between key function printing
+		std::cout << "~~~AVLMap Search~~~" << std::endl;
 
 		using namespace std::chrono;
 		auto start = high_resolution_clock::now(); //Times the function
@@ -65,21 +66,21 @@ namespace tacl {
 			}
 		}
 
-		cout << "Found " << positionVector.size() << " instances of \"" << value << "\" within the AVLMap! Key positions returned." << endl;
+		std::cout << "Found " << positionVector.size() << " instances of \"" << value << "\" within the AVLMap! Key positions returned." << std::endl;
 
-		cout << "~~~AVLMAP Search~~~" << endl;
-		cout << endl;
+		std::cout << "~~~AVLMAP Search~~~" << std::endl;
+		std::cout << std::endl;
 
 		auto end = high_resolution_clock::now();
 		auto duration = duration_cast<microseconds>(end - start);
-		cout << "AVLMap value search run time in micro seconds: " << duration.count() << endl; //prints out how long it took the function to run
+		std::cout << "AVLMap value search run time in micro seconds: " << duration.count() << std::endl; //prints out how long it took the function to run
 
 	}
 
 	void MapWrapper::replaceMap(std::string value, std::string newValue) {
 
-		cout << endl;//ensures spacing between key function printing
-		cout << "~~~AVLMap Replace~~~" << endl;
+		std::cout << std::endl;//ensures spacing between key function printing
+		std::cout << "~~~AVLMap Replace~~~" << std::endl;
 
 		using namespace std::chrono;
 		auto start = high_resolution_clock::now(); //Times the function
@@ -94,28 +95,28 @@ namespace tacl {
 			}
 		}
 
-		cout << "Replaced " << replacedCount << " values of \"" << value << "\" with \"" << newValue << "\"." << endl;
-		cout << "~~~AVLMap Replace~~~" << endl;
-		cout << endl;
+		std::cout << "Replaced " << replacedCount << " values of \"" << value << "\" with \"" << newValue << "\"." << std::endl;
+		std::cout << "~~~AVLMap Replace~~~" << std::endl;
+		std::cout << std::endl;
 
 		auto end = high_resolution_clock::now();
 		auto duration = duration_cast<microseconds>(end - start);
-		cout << "AVLMap value replace run time in micro seconds: " << duration.count() << endl; //prints out how long it took the function to run
+		std::cout << "AVLMap value replace run time in micro seconds: " << duration.count() << std::endl; //prints out how long it took the function to run
 
 	}
 
 	void MapWrapper::removeMap(std::string value) {
 
-		cout << endl;//ensures spacing between key function printing
-		cout << "~~~AVLMap Removal~~~" << endl;
+		std::cout << std::endl;//ensures spacing between key function printing
+		std::cout << "~~~AVLMap Removal~~~" << std::endl;
 
 		using namespace std::chrono;
 		auto start = high_resolution_clock::now(); //Times the function
 
 		int sizeBefore = avlMap.getSize();
 
-		cout << "Size of AVLMap before removal: " << sizeBefore << endl;
-		cout << "Attempting to remove \"" << value << "\"." << endl;
+		std::cout << "Size of AVLMap before removal: " << sizeBefore << std::endl;
+		std::cout << "Attempting to remove \"" << value << "\"." << std::endl;
 
 		for (int i = 0; i < sizeBefore; ++i) {
 			if (avlMap.search(i) == value) {
@@ -126,19 +127,19 @@ namespace tacl {
 		int sizeAfter = avlMap.getSize();
 
 		if (sizeBefore == sizeAfter) {
-			cout << "ERROR: Key Not Found!" << endl;
+			std::cout << "ERROR: Key Not Found!" << std::endl;
 		}
 		else if (sizeBefore != sizeAfter) {
-			cout << "SUCCESS: Value Pair(s) Removed!" << endl;
-			cout << "Size of AVLMap after removal: " << sizeAfter << endl;
+			std::cout << "SUCCESS: Value Pair(s) Removed!" << std::endl;
+			std::cout << "Size of AVLMap after removal: " << sizeAfter << std::endl;
 		}
 
-		cout << "~~~AVLMap Removal~~~" << endl;
-		cout << endl;
+		std::cout << "~~~AVLMap Removal~~~" << std::endl;
+		std::cout << std::endl;
 
 		auto end = high_resolution_clock::now();
 		auto duration = duration_cast<microseconds>(end - start);
-		cout << "AVLMap value removal run time in micro seconds: " << duration.count() << endl; //prints out how long it took the function to run
+		std::cout << "AVLMap value removal run time in micro seconds: " << duration.count() << std::endl; //prints out how long it took the function to run
 
 	}
 
