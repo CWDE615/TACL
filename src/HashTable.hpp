@@ -4,7 +4,6 @@
 #include <string>
 #include <vector>
 #include <chrono>
-using namespace std;
 
 class HashTable
 {
@@ -12,7 +11,7 @@ class HashTable
 private:
 
 	const double MAXFACTOR = 0.5;
-	list<pair<int, string>>* table;
+	std::list<std::pair<int, std::string>>* table;
 	unsigned int count;
 	unsigned int tableSize;
 
@@ -21,7 +20,7 @@ private:
 	unsigned int Hash(int key);
 	void Rehash();
 
-	list<pair<int, string>>* GetTable();
+	std::list<std::pair<int, std::string>>* GetTable();
 	unsigned int GetCount();
 	unsigned int GetTableSize();
 
@@ -30,14 +29,14 @@ public:
 	HashTable();
 	HashTable operator=(HashTable& rhs); 
 	
-	void Insert(int key, string value);
+	void Insert(int key, std::string value);
 	bool HasKey(int key);
-	bool HasValue(string value);
-	vector<int> SearchValue(string value);
-	string SearchKey(int key);
+	bool HasValue(std::string value);
+	std::vector<int> SearchValue(std::string value);
+	std::string SearchKey(int key);
 	bool RemoveKey(int key);
-	bool RemoveValue(string value);
-	unsigned int ReplaceValue(string value, string newValue);
+	bool RemoveValue(std::string value);
+	unsigned int ReplaceValue(std::string value, std::string newValue);
 	int Size();
 
 };
@@ -49,7 +48,7 @@ HashTable::HashTable() {
 	tableSize = 31;
 
 
-	table = new list<pair<int, string>>[tableSize];
+	table = new std::list<std::pair<int, std::string>>[tableSize];
 
 }
 //Operator overloader, fairly straight forward and self explanatory.
@@ -74,7 +73,7 @@ unsigned int HashTable::GetCount() {
 
 }
 //Helper function for operator overloarder.
-list<pair<int, string>>* HashTable::GetTable() {
+std::list<std::pair<int, std::string>>* HashTable::GetTable() {
 
 	return table;
 
@@ -96,8 +95,8 @@ void HashTable::Rehash() {
 
 	unsigned int tempSize = tableSize;
 	tableSize = tableSize * 2 + 1;
-	list <pair<int, string>>* tempArr = table;
-	table = new list <pair<int, string>>[tableSize];
+	std::list <std::pair<int, std::string>>* tempArr = table;
+	table = new std::list <std::pair<int, std::string>>[tableSize];
 
 	for (unsigned int i = 0; i < tempSize; i++) { //copies old table into new table and rehashes each of the key values
 		for (auto iter = tempArr[i].begin(); iter != tempArr[i].end(); iter++) {
@@ -107,7 +106,7 @@ void HashTable::Rehash() {
 
 }
 //Inserts new keys into the table
-void HashTable::Insert(int key, string value) {
+void HashTable::Insert(int key, std::string value) {
 
 	if (!HasKey(key)) { //if the key does not exist within the Table, create one and push back the 
 		table[Hash(key)].emplace_back(key, value);
@@ -135,7 +134,7 @@ bool HashTable::HasKey(int key) {
 
 }
 //Returns whether or not a value is present within the table
-bool HashTable::HasValue(string value) {
+bool HashTable::HasValue(std::string value) {
 
 	for (int i = 0; i < tableSize; ++i) {
 		unsigned int hashVal = Hash(i);
@@ -173,7 +172,7 @@ int HashTable::Size() {
 
 }
 //Searches the table using a key, and returns a string based on the key value. Will print ERROR: Key not found if the key isn't found
-string HashTable::SearchKey(int key) {
+std::string HashTable::SearchKey(int key) {
 
 	unsigned int hashVal = Hash(key);
 	for (auto finder = table[hashVal].begin(); finder != table[hashVal].end(); finder++) { //Loops through the table until it finds a key value pair matching the key passed in.
@@ -185,9 +184,9 @@ string HashTable::SearchKey(int key) {
 
 }
 //Searches the table using a value. As there are more than likely multiple keys containing the same value it returns a vector of keys (which are the positions of the words).
-vector<int> HashTable::SearchValue(string value) {
+std::vector<int> HashTable::SearchValue(std::string value) {
 
-	vector<int> positionVector; //Loops through the table until the end of the table. As it goes along it constructs a vector of positions (keys) where the value is found.
+	std::vector<int> positionVector; //Loops through the table until the end of the table. As it goes along it constructs a vector of positions (keys) where the value is found.
 	for (int i = 0; i < tableSize; ++i) {
 		unsigned int hashVal = Hash(i);
 		for (auto finder = table[hashVal].begin(); finder != table[hashVal].end(); finder++) {
@@ -201,7 +200,7 @@ vector<int> HashTable::SearchValue(string value) {
 
 }
 //Removes the values from the table, along with their keys.
-bool HashTable::RemoveValue(string value) {
+bool HashTable::RemoveValue(std::string value) {
 
 	bool exists = false;
 
@@ -226,7 +225,7 @@ bool HashTable::RemoveValue(string value) {
 
 }
 //Replaces the passed in value within the table with a new passed in value.
-unsigned int HashTable::ReplaceValue(string value, string newValue) {
+unsigned int HashTable::ReplaceValue(std::string value, std::string newValue) {
 
 	unsigned int replacedCount = 0;
 

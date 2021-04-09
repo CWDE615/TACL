@@ -13,25 +13,25 @@ namespace tacl {
 		HashTable table;
 
 	public:
-		HashWrapper(string words); //constructor
+		HashWrapper(std::string words); //constructor
 
-		void searchHashTable(string value); //Search functionality
+		void searchHashTable(std::string value); //Search functionality
 
-		void replaceHashTable(string value, string newValue); //Replace functionality
+		void replaceHashTable(std::string value, std::string newValue); //Replace functionality
 
-		void removeHashTable(string value); //Remove functionality
+		void removeHashTable(std::string value); //Remove functionality
 
 	};
 
-	HashWrapper::HashWrapper(string words) {
+	HashWrapper::HashWrapper(std::string words) {
 
 		using namespace std::chrono;
 		auto start = high_resolution_clock::now(); //Times the function
 
-		istringstream iss(words);
+		std::istringstream iss(words);
 		int counter = 0;
 
-		string word;
+		std::string word;
 		while (getline(iss, word, ' ')) {
 			table.Insert(counter, word);
 			counter++;
@@ -39,78 +39,78 @@ namespace tacl {
 
 		auto end = high_resolution_clock::now();
 		auto duration = duration_cast<microseconds>(end - start);
-		cout << "HashTable construction run time in micro seconds: " << duration.count() << endl; //prints out how long it took the function to run
+		std::cout << "HashTable construction run time in micro seconds: " << duration.count() << std::endl; //prints out how long it took the function to run
 
 	}
 
-	void HashWrapper::removeHashTable(string value) {
+	void HashWrapper::removeHashTable(std::string value) {
 
-		cout << endl;//ensures spacing between key function printing
-		cout << "~~~HashTable Removal~~~" << endl;
+		std::cout << std::endl;//ensures spacing between key function printing
+		std::cout << "~~~HashTable Removal~~~" << std::endl;
 
 		using namespace std::chrono;
 		auto start = high_resolution_clock::now(); //Times the function
 
-		cout << "Size of HashTable before removal: " << table.Size() << endl;
-		cout << "Attempting to remove \"" << value << "\"." << endl;
+		std::cout << "Size of HashTable before removal: " << table.Size() << std::endl;
+		std::cout << "Attempting to remove \"" << value << "\"." << std::endl;
 
 		bool removed = table.RemoveValue(value);
 
 		if (!removed) {
-			cout << "ERROR: Key Not Found!" << endl;
+			std::cout << "ERROR: Key Not Found!" << std::endl;
 		}
 		else if (removed) {
-			cout << "SUCCESS: Value Pair(s) Removed!" << endl;
-			cout << "Size of HashTable after removal: " << table.Size() << endl;
+			std::cout << "SUCCESS: Value Pair(s) Removed!" << std::endl;
+			std::cout << "Size of HashTable after removal: " << table.Size() << std::endl;
 		}
 
-		cout << "~~~HashTable Removal~~~" << endl;
-		cout << endl;
+		std::cout << "~~~HashTable Removal~~~" << std::endl;
+		std::cout << std::endl;
 
 		auto end = high_resolution_clock::now();
 		auto duration = duration_cast<microseconds>(end - start);
-		cout << "HashTable value removal run time in micro seconds: " << duration.count() << endl; //prints out how long it took the function to run
+		std::cout << "HashTable value removal run time in micro seconds: " << duration.count() << std::endl; //prints out how long it took the function to run
 
 	}
 
-	void HashWrapper::replaceHashTable(string value, string newValue) {
+	void HashWrapper::replaceHashTable(std::string value, std::string newValue) {
 
-		cout << endl;//ensures spacing between key function printing
-		cout << "~~~HashTable Replace~~~" << endl;
+		std::cout << std::endl;//ensures spacing between key function printing
+		std::cout << "~~~HashTable Replace~~~" << std::endl;
 
 		using namespace std::chrono;
 		auto start = high_resolution_clock::now(); //Times the function
 
 		unsigned int replacedCount = table.ReplaceValue(value, newValue);
 
-		cout << "Replaced " << replacedCount << " values of \"" << value << "\" with \"" << newValue << "\"." << endl;
-		cout << "~~~HashTable Replace~~~" << endl;
-		cout << endl;
+		std::cout << "Replaced " << replacedCount << " values of \"" << value << "\" with \"" << newValue << "\"." << std::endl;
+		std::cout << "~~~HashTable Replace~~~" << std::endl;
+		std::cout << std::endl;
 
 		auto end = high_resolution_clock::now();
 		auto duration = duration_cast<microseconds>(end - start);
-		cout << "HashTable value replace run time in micro seconds: " << duration.count() << endl; //prints out how long it took the function to run
+		std::cout << "HashTable value replace run time in micro seconds: " << duration.count() << std::endl; //prints out how long it took the function to run
 
 	}
 
-	void HashWrapper::searchHashTable(string value) {
+	void HashWrapper::searchHashTable(std::string value) {
 
-		cout << endl; //ensures spacing between key function printing
-		cout << "~~~HashTable Search~~~" << endl;
+		std::cout << std::endl; //ensures spacing between key function printing
+		std::cout << "~~~HashTable Search~~~" << std::endl;
 
 		using namespace std::chrono;
 		auto start = high_resolution_clock::now(); //Times the function
 
-		vector<int> positionVector = table.SearchValue(value);
+		std::vector<int> positionVector = table.SearchValue(value);
 
-		cout << "Found " << positionVector.size() << " instances of \"" << value << "\" within the HashTable! Key positions returned." << endl;
+		std::cout << "Found " << positionVector.size() << " instances of \"" << value << "\" within the HashTable! Key positions returned." << std::endl;
 
-		cout << "~~~HashTable Search~~~" << endl;
-		cout << endl;
+		std::cout << "~~~HashTable Search~~~" << std::endl;
+		std::cout << std::endl;
 
 		auto end = high_resolution_clock::now();
 		auto duration = duration_cast<microseconds>(end - start);
-		cout << "HashTable value search run time in micro seconds: " << duration.count() << endl; //prints out how long it took the function to run
+		std::cout << "HashTable value search run time in micro seconds: " << duration.count() << std::endl; //prints out how long it took the function to run
 
 	}
 }
