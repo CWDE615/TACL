@@ -15,11 +15,11 @@ private:
 public:
 	HashWrapper(string words); //constructor
 
-	void SearchHashTable(string value); //Search functionality
+	void searchHashTable(string value); //Search functionality
 
-	void ReplaceHashTable(string value, string newValue); //Replace functionality
+	void replaceHashTable(string value, string newValue); //Replace functionality
 
-	void RemoveHashTable(string value); //Remove functionality
+	void removeHashTable(string value); //Remove functionality
 
 };
 
@@ -43,7 +43,7 @@ HashWrapper::HashWrapper(string words) {
 
 }
 
-void HashWrapper::RemoveHashTable(string value) {
+void HashWrapper::removeHashTable(string value) {
 	
 	cout << endl;//ensures spacing between key function printing
 	cout << "~~~HashTable Removal~~~" << endl;
@@ -73,7 +73,7 @@ void HashWrapper::RemoveHashTable(string value) {
 
 }
 
-void HashWrapper::ReplaceHashTable(string value, string newValue) {
+void HashWrapper::replaceHashTable(string value, string newValue) {
 
 	cout << endl;//ensures spacing between key function printing
 	cout << "~~~HashTable Replace~~~" << endl;
@@ -93,7 +93,7 @@ void HashWrapper::ReplaceHashTable(string value, string newValue) {
 
 }
 
-void HashWrapper::SearchHashTable(string value) {
+void HashWrapper::searchHashTable(string value) {
 
 	cout << endl; //ensures spacing between key function printing
 	cout << "~~~HashTable Search~~~" << endl;
