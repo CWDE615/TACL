@@ -1,163 +1,226 @@
 #pragma once
-#include <list>
+/*
+MIT License
+
+Copyright (c) 2021 Christopher William Driggers-Ellis
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+*/
+
+#pragma once
+#include <forward_list>
 #include <iostream>
 #include <string>
 #include <vector>
-#include <chrono>
-namespace tacl {
+
+/* Hash Table implementation derived from Christopher William Driggers-Ellis' submission to Stepik 10.2.1
+   and retooled by both Corey and Christopher. */
+namespace tacl
+{
+	template<typename T>
 	class HashTable
 	{
 
 	private:
 
-		const double MAXFACTOR = 0.5;
-		std::list<std::pair<int, std::string>>* table;
-		unsigned int count;
-		unsigned int tableSize;
+		const double m_MAX_FACTOR = 0.5;
+		std::forward_list<T>* m_table;
+		unsigned int m_count;
+		unsigned int m_tableSize;
 
 		//helpers
-		double GetLoadFactor(unsigned int count, unsigned int tableSize);
-		unsigned int Hash(int key);
-		void Rehash();
+		double getLoadFactor() const;
+		unsigned int hash(T data);
+		void rehash();
 
-		std::list<std::pair<int, std::string>>* GetTable();
-		unsigned int GetCount();
-		unsigned int GetTableSize();
+		std::forward_list<T>* copyTable();
+		unsigned int getCount();
+		unsigned int size();
 
 	public:
 
 		HashTable();
-		HashTable operator=(HashTable& rhs);
+		HashTable(const HashTable& rhs);
+		HashTable& operator=(const HashTable& rhs);
 
-		void Insert(int key, std::string value);
-		bool HasKey(int key);
-		bool HasValue(std::string value);
-		std::vector<int> SearchValue(std::string value);
-		std::string SearchKey(int key);
-		bool RemoveKey(int key);
-		bool RemoveValue(std::string value);
-		unsigned int ReplaceValue(std::string value, std::string newValue);
-		int Size();
+		bool insert(T data);
+		bool find(T data);
+		T search(T data);
+		bool remove(T data);
+		int size();
 
 	};
 
 	//constructs the hash table with a default size of 31, and a count of 0
-	HashTable::HashTable() {
+	template<typename T>
+	HashTable<T>::HashTable()
+	{
 
-		count = 0;
-		tableSize = 31;
+		m_count = 0;
+		m_tableSize = 31;
 
 
-		table = new std::list<std::pair<int, std::string>>[tableSize];
+		m_table = new std::forward_list<T>[m_tableSize];
 
 	}
-	//Operator overloader, fairly straight forward and self explanatory.
-	HashTable HashTable::operator=(HashTable& rhs) {
 
-		table = rhs.GetTable();
-		count = rhs.GetCount();
-		tableSize = rhs.GetTableSize();
+	template<typename T>
+	HashTable<T>::HashTable(const HashTable& rhs)
+	{
+
+	}
+
+	//Operator overloader, fairly straight forward and self explanatory.
+	template<typename T>
+	HashTable<T>& HashTable<T>::operator=(const HashTable<T>& rhs)
+	{
+		m_table = rhs.copyTable();
+		m_count = rhs.getCount();
+		m_tableSize = rhs.getTableSize();
 		return *this;
 
 	}
+
 	//Helper function for operator overloader.
-	unsigned int HashTable::GetTableSize() {
+	template<typename T>
+	unsigned int HashTable<T>::getTableSize() {
 
-		return tableSize;
-
-	}
-	//Helper function for operator overloarder.
-	unsigned int HashTable::GetCount() {
-
-		return count;
+		return m_tableSize;
 
 	}
-	//Helper function for operator overloarder.
-	std::list<std::pair<int, std::string>>* HashTable::GetTable() {
 
-		return table;
+	//Helper function for operator overloarder.
+	template<typename T>
+	unsigned int HashTable<T>::getCount() {
+
+		return m_count;
+
+	}
+
+	//Helper function for operator overloarder.
+	template<typename T>
+	std::forward_list<T>* HashTable<T>::copyTable() {
+
+		return m_table;
 
 	}
 	//Returns the current load factor of the hash table. Load factor is calculated by number of elements within the Hashtable divided by the tables size.
-	double HashTable::GetLoadFactor(unsigned int count, unsigned int tableSize) {
-
-		return ((double)count) / tableSize;
-
-	}
-	//Hashes a key by dividing the key by the table size and passing back the remainder.
-	unsigned int HashTable::Hash(int key) {
-
-		return key % tableSize;
+	template<typename T>
+	double HashTable<T>::getLoadFactor() const
+	{
+		return ((double)m_count) / m_tableSize;
 
 	}
+
+	template<typename T>
+	unsigned int HashTable<T>::hash(T data)
+	{
+		return std::hash<T>(data) % m_tableSize;
+	}
+
+
 	//If (Load factor is >= MaxFactor) Increases the table size by times 2 plus 1 (to keep it prime), and rehashes all the keys
-	void HashTable::Rehash() {
-
-		unsigned int tempSize = tableSize;
-		tableSize = tableSize * 2 + 1;
-		std::list <std::pair<int, std::string>>* tempArr = table;
-		table = new std::list <std::pair<int, std::string>>[tableSize];
+	template<typename T>
+	void HashTable<T>::rehash()
+	{
+		unsigned int tempSize = m_tableSize;
+		m_tableSize = m_tableSize * 2 + 1;
+		std::forward_list<T>* tempArr = m_table;
+		m_table = new std::forward_list<T>[m_tableSize];
 
 		for (unsigned int i = 0; i < tempSize; i++) { //copies old table into new table and rehashes each of the key values
-			for (auto iter = tempArr[i].begin(); iter != tempArr[i].end(); iter++) {
-				table[Hash(iter->first)].emplace_back(iter->first, iter->second);
-			}
+			m_table[i] = tempArr[i];
 		}
 
 	}
+
 	//Inserts new keys into the table
-	void HashTable::Insert(int key, std::string value) {
-
-		if (!HasKey(key)) { //if the key does not exist within the Table, create one and push back the 
-			table[Hash(key)].emplace_back(key, value);
+	template<typename T>
+	bool HashTable<T>::insert(T data)
+	{
+		if (!find(data)) // if the key does not exist within the Table, create one and push back the 
+		{
+			m_table[hash(data)].emplace_front(data);
+			return true;
 		}
-		else {
-			return;
-		}
-		count++;
-
-		if (GetLoadFactor(count, tableSize) >= MAXFACTOR) {
-			Rehash();
+		else
+		{
+			return false;
 		}
 
+		m_count++;
+
+		if (getLoadFactor() >= m_MAX_FACTOR)
+		{
+			rehash();
+		}
 	}
-	//Returns whether or not a key is present within the table
-	bool HashTable::HasKey(int key) {
 
-		unsigned int hashVal = Hash(key);
-		for (auto finder = table[hashVal].begin(); finder != table[hashVal].end(); finder++) {
-			if (finder->first == key) {
+	// finds element in the hash table
+	template<typename T>
+	bool HashTable<T>::find(T data)
+	{
+		unsigned int hashVal = hash(data);
+		for (auto finder = m_table[hashVal].begin(); finder != m_table[hashVal].end(); finder++)
+		{
+			if (finder == data)
+			{
 				return true;
 			}
 		}
 		return false;
-
 	}
-	//Returns whether or not a value is present within the table
-	bool HashTable::HasValue(std::string value) {
 
-		for (int i = 0; i < tableSize; ++i) {
-			unsigned int hashVal = Hash(i);
-			for (auto finder = table[hashVal].begin(); finder != table[hashVal].end(); finder++) {
-				if (finder->second == value) {
-					return true;
-				}
+	// finds element in the has table and returns a copy
+	template<typename T>
+	T HashTable<T>::search(T data)
+	{
+		if (!find(data))
+			throw std::exception("Element not found");
+
+		unsigned int hashVal = hash(data);
+		for (auto finder = m_table[hashVal].begin(); finder != m_table[hashVal].end(); finder++)
+		{
+			if (finder == data)
+			{
+				return *finder;
 			}
 		}
-		return false;
 	}
-	//Removes a key value pair (if present).
-	bool HashTable::RemoveKey(int key) {
 
-		int hashVal = Hash(key);
-		auto& newTable = table[hashVal];
+	template<typename T>
+	inline bool HashTable<T>::remove(T data)
+	{
+		if (!find(data))
+			return false;
+
+		int hashVal = hash(data);
 		bool exists = false;
 
-		for (auto itr = begin(newTable); itr != end(newTable); itr++) {
-			if (itr->first == key) {
-				exists = true;
-				itr = newTable.erase(itr);
-				count--;
+		for (auto finder = m_table[hashVal].begin(); finder != m_table[hashVal].end(); finder++)
+		{
+			if (finder == data)
+			{
+				m_count--;
+				m_table[hashVal].erase(T);
+        exists = true;
 				break;
 			}
 		}
@@ -165,81 +228,13 @@ namespace tacl {
 		return exists;
 
 	}
+
 	//returns the size of the table in the form of a count integer
-	int HashTable::Size() {
+	template<typename T>
+	int HashTable<T>::size()
+	{
 
-		return count;
-
-	}
-	//Searches the table using a key, and returns a string based on the key value. Will print ERROR: Key not found if the key isn't found
-	std::string HashTable::SearchKey(int key) {
-
-		unsigned int hashVal = Hash(key);
-		for (auto finder = table[hashVal].begin(); finder != table[hashVal].end(); finder++) { //Loops through the table until it finds a key value pair matching the key passed in.
-			if (finder->first == key) {
-				return finder->second; //returns the value matching the passed in key.
-			}
-		}
-		return "ERROR: Key Not Found!";
-
-	}
-	//Searches the table using a value. As there are more than likely multiple keys containing the same value it returns a vector of keys (which are the positions of the words).
-	std::vector<int> HashTable::SearchValue(std::string value) {
-
-		std::vector<int> positionVector; //Loops through the table until the end of the table. As it goes along it constructs a vector of positions (keys) where the value is found.
-		for (int i = 0; i < tableSize; ++i) {
-			unsigned int hashVal = Hash(i);
-			for (auto finder = table[hashVal].begin(); finder != table[hashVal].end(); finder++) {
-				if (finder->second == value) {
-					positionVector.push_back(finder->first);
-				}
-			}
-		}
-
-		return positionVector;
-
-	}
-	//Removes the values from the table, along with their keys.
-	bool HashTable::RemoveValue(std::string value) {
-
-		bool exists = false;
-
-		for (int i = 0; i < tableSize; ++i) { //Loops through the table and searches for the passed in value. When it finds the value it removes the element from the table.
-			int hashVal = Hash(i);
-			auto& newTable = table[hashVal];
-
-			for (auto itr = begin(newTable); itr != end(newTable); itr++) {
-				if (itr->second == value) {
-					exists = true;
-					itr = newTable.erase(itr);
-					count--;
-					break;
-				}
-			}
-		}
-		if (HasValue(value)) {
-			RemoveValue(value);
-		}
-
-		return exists;
-
-	}
-	//Replaces the passed in value within the table with a new passed in value.
-	unsigned int HashTable::ReplaceValue(std::string value, std::string newValue) {
-
-		unsigned int replacedCount = 0;
-
-		for (int i = 0; i < tableSize; ++i) { //Loops through the entire table and replaces each value it finds matching the passed in value with newValue.
-			unsigned int hashVal = Hash(i);
-			for (auto finder = table[hashVal].begin(); finder != table[hashVal].end(); finder++) {
-				if (finder->second == value) { //if the second value within the pair (the string value or word) is equivalent to the passed in value then replace.
-					finder->second = newValue;
-					++replacedCount;
-				}
-			}
-		}
-
-		return replacedCount;
+		return m_count;
 
 	}
 }
