@@ -52,7 +52,7 @@ namespace tacl
 
 		std::forward_list<T>* copyTable();
 		unsigned int getCount();
-		unsigned int getTableSize();
+		unsigned int size();
 
 	public:
 
@@ -220,6 +220,7 @@ namespace tacl
 			{
 				m_count--;
 				m_table[hashVal].erase(T);
+        exists = true;
 				break;
 			}
 		}
@@ -237,4 +238,3 @@ namespace tacl
 
 	}
 }
-
