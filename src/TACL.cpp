@@ -32,7 +32,7 @@ To request a feature or report bugs, please use our gitHub page.
 
 int main(int argc, char* argv[])
 {
-	cxxopts::Options menu("Text Analysis Via Command Line (TACL)", "Simple text analysis functionality via the command line");
+	cxxopts::Options menu("Text Analysis Via Command Line (TACL)", "Simple text analysis functionality using the command line");
 
 	menu.add_options("File IO")
 		("l,load_file", "Load File for Analysis", cxxopts::value<std::string>())
