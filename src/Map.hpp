@@ -69,7 +69,7 @@ namespace tacl
         Node* rightLeftRotation(Node* root);
 
         // search
-        std::string search(K id, Node* root) const;
+        V search(K id, Node* root) const;
 
         // Other helper functions
         void delTree(Node* root);
@@ -83,7 +83,7 @@ namespace tacl
         // Public Member Functions
         bool insert(K id, V name); // insertion and removals
         bool remove(K id);
-        std::string search(K id) const;      // search by id
+        V search(K id) const;      // search by id
 
         int countLevels();                 // returns the number of levels in the tree
         void fillIdsInOrder(std::vector<K>& ids) const; // gives a public overload of fillIdsInOrder for testing
@@ -466,10 +466,10 @@ namespace tacl
 
     // search for student by id. Simple BST searching algorithm based on the assumption that the ids are unique.
     template<typename K, typename V>
-    std::string Map<K,V>::search(K id, Node* root) const
+    V Map<K,V>::search(K id, Node* root) const
     {
         if (root == nullptr)
-            return "unsuccessful";            // return unsuccessful if not found
+            throw std::exception("Element not found");            // return empty string signifying unsuccessful if not found
         else if (id < root->m_id)
             return search(id, root->m_left);  // go down the tree until a leaf is reached
         else if (id > root->m_id)
@@ -481,7 +481,7 @@ namespace tacl
     // search for an element by its id. Runs in O(log(n)) in the worst case, as it calls the id-based search function and O(1) in the best case, for idValidation
     // is O(1) in any case.
     template<typename K, typename V>
-    std::string Map<K,V>::search(K id) const
+    V Map<K,V>::search(K id) const
     {
         return search(id, m_root);
     }
@@ -556,29 +556,4 @@ namespace tacl
         return m_bal; // return copy of m_bal to caller.
     }
 
-    // prints ids in the passed vector reference. O(n), where n is the number of elements in the vector
-    template<typename T>
-    void print(std::vector<T>& data)
-    {
-        for (auto iter = data.begin(); iter != data.end(); iter++)
-            std::cout << *iter << std::endl;
-    }
-
-    // prints the success of a function that returns a bool
-    void printSuccess(bool success)
-    {
-        if (success)
-            std::cout << "successful" << std::endl;
-        else
-            std::cout << "unsuccessful" << std::endl;
-    }
-
-    // gets the remainder of a line following the command's first word. substr and getline are O(s), where s is the length of the string, so this runs in
-    // that time as well.
-    std::string getLineRemoveSpace()
-    {
-        std::string line;
-        std::getline(std::cin, line);
-        return line.substr(1, line.size() - 1);
-    }
 }
