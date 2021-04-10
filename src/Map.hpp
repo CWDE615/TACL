@@ -93,7 +93,7 @@ namespace tacl
         bool isBalanced() const;
         bool isBalanced(Node* root) const; // test function to determine balance of the tree
 
-        int getSize();
+        int size();
     };
 
     // checks the rotation of a node
