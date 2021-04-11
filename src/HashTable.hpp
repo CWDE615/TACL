@@ -39,34 +39,34 @@ namespace tacl
 	class HashTable
 	{
 
-	private:
+	protected:
 
 		const double m_MAX_FACTOR = 0.6;
 		std::forward_list<T>* m_table;
-		int m_count;
-		int m_tableSize;
+		unsigned int m_count;
+		unsigned int m_tableSize;
 
 		//helpers
 		double getLoadFactor() const;
-		unsigned int hash(T data);
-		void rehash();
+		virtual unsigned int hash(T data);
+		virtual void rehash();
 
 		std::forward_list<T>* copyTable();
-		void copy(const HashTable& rhs);
-		int getCount();
-		int size();
+		virtual void copy(const HashTable& rhs);
+		unsigned int getCount();
+		unsigned int size();
 
 	public:
 
 		HashTable();
 		HashTable(const HashTable& rhs);
 		HashTable& operator=(const HashTable& rhs);
-		~HashTable();
+		virtual ~HashTable();
 
-		bool insert(T data);
-		bool find(T data);
-		T search(T data);
-		bool remove(T data);
+		virtual bool insert(T data);
+		virtual bool find(T data);
+		virtual T search(T data);
+		virtual bool remove(T data);
 
 	};
 
@@ -103,7 +103,7 @@ namespace tacl
 
 	//Helper function for operator overloarder.
 	template<typename T>
-	int HashTable<T>::getCount() 
+	unsigned int HashTable<T>::getCount() 
 	{
 		return m_count;
 	}
@@ -183,7 +183,7 @@ namespace tacl
 		unsigned int hashVal = hash(data);
 		for (auto finder = m_table[hashVal].begin(); finder != m_table[hashVal].end(); finder++)
 		{
-			if (finder == data)
+			if (*finder == data)
 			{
 				return true;
 			}
@@ -201,7 +201,7 @@ namespace tacl
 		unsigned int hashVal = hash(data);
 		for (auto finder = m_table[hashVal].begin(); finder != m_table[hashVal].end(); finder++)
 		{
-			if (finder == data)
+			if (*finder == data)
 			{
 				return *finder;
 			}
@@ -219,11 +219,11 @@ namespace tacl
 
 		for (auto finder = m_table[hashVal].begin(); finder != m_table[hashVal].end(); finder++)
 		{
-			if (finder == data)
+			if (*finder == data)
 			{
 				m_count--;
 				m_table[hashVal].erase(T);
-        exists = true;
+                exists = true;
 				break;
 			}
 		}
@@ -234,8 +234,8 @@ namespace tacl
 
 	//returns the size of the table in the form of a count integer
 	template<typename T>
-	int HashTable<T>::size()
+	unsigned int HashTable<T>::size()
 	{
-		return m_count;
+		return m_tableSize;
 	}
 }
