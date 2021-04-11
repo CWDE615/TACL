@@ -22,7 +22,7 @@ To request a feature or report bugs, please use our gitHub page.
 */
 
 #pragma once
-#include <string>
+#include "Library.hpp"
 
 namespace tacl
 {
@@ -38,12 +38,16 @@ namespace tacl
 		// Private Funcitons
 		void heapifyUp(int index);
 		void heapifyDown(int index);
+		void increaseSize();
+		void copy(const Heap& rhs);
 
 	public:
 		// Public Funcitons
 		Heap();
+		Heap(const Heap& rhs);
+		Heap& operator=(const Heap& rhs);
 		~Heap();
-		bool insert(T& data);
+		void insert(T& data);
 		T top(T& data);
 		void extract();
 
@@ -57,6 +61,21 @@ namespace tacl
 		m_size = 16;
 		m_count = 0;
 		m_heap = new T[m_size];
+	}
+
+	template<typename T, typename C>
+	Heap<T, C>::Heap(const Heap& rhs)
+	{
+		copy(rhs);
+	}
+
+	template<typename T, typename C>
+	Heap<T,C>& Heap<T,C>::operator=(const Heap<T,C>& rhs)
+	{
+		delete[] m_heap;
+		copy(rhs);
+
+		return *this;
 	}
 
 	template<typename T, typename C>
@@ -89,10 +108,10 @@ namespace tacl
 	void Heap<T,C>::heapifyDown(int index)
 	{
 		int next;
-		if (2 * index + 2 >= size) // check whether the current elemnt has a right child in the heap
+		if (2 * index + 2 >= m_size) // check whether the current elemnt has a right child in the heap
 		{
 			next = 2 * index + 1;    // if the right child is not in the heap, then the left is
-		}                        // if neither were, it would be caught above
+		}                            // if neither were, it would be caught above
 		else // both are in range of the heap
 		{
 			// the next index is 2*index + 1 or 2*index + 2, which ever has a lesser entry
@@ -110,9 +129,30 @@ namespace tacl
 	}
 
 	template<typename T, typename C>
-	bool Heap<T,C>::insert(T& data)
+	void Heap<T, C>::increaseSize()
 	{
-		return false;
+		T* temp = tacl::copy(m_heap, m_size, m_size * 2);
+
+		delete[] m_heap;
+		m_heap = temp;
+	}
+
+	template<typename T, typename C>
+	void Heap<T, C>::copy(const Heap& rhs)
+	{
+		m_heap = tacl::copy(rhs.m_heap, rhs.m_count, rhs.m_size);
+		m_count = rhs.m_count;
+		m_size = rhs.m_size;
+	}
+
+	template<typename T, typename C>
+	void Heap<T,C>::insert(T& data)
+	{
+		m_heap[m_count++] = data;
+		heapifyUp();
+
+		if (m_count == m_size)
+			increaseSize();
 	}
 
 	template<typename T, typename C>
@@ -130,7 +170,7 @@ namespace tacl
 		if (m_count = 0)
 			throw std::exception("Heap is empty");
 
-		m_heap[0] = m_heap[size - 1];
+		m_heap[0] = m_heap[m_size - 1];
 		heapifyDown(0);
 	}
 

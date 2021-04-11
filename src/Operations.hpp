@@ -27,7 +27,6 @@ To request a feature or report bugs, please use our gitHub page.
 
 #pragma once
 #include "Map.hpp" // Avl tree implementation
-#include "MapSet.hpp"  // map of sets for search
 #include "PriorityQueue.hpp" // priority queue implementations
 #include <fstream>
 #include <string>

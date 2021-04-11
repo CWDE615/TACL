@@ -83,18 +83,14 @@ namespace tacl
 	template<typename T>
 	HashTable<T>::HashTable(const HashTable& rhs)
 	{
-		m_table = rhs.copyTable();
-		m_count = rhs.getCount();
-		m_tableSize = rhs.size();
+	    copy();
 	}
 
 	//Operator overloader, fairly straight forward and self explanatory.
 	template<typename T>
 	HashTable<T>& HashTable<T>::operator=(const HashTable<T>& rhs)
 	{
-		m_table = rhs.copyTable();
-		m_count = rhs.getCount();
-		m_tableSize = rhs.size();
+		copy();
 		return *this;
 	}
 

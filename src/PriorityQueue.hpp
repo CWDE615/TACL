@@ -38,11 +38,14 @@ namespace tacl
         T* m_arr;
 
         void increaseSize();
+        void copy(const PriorityQueue& rhs);
 
     public:
 
         // Fuctions
         PriorityQueue(bool m_descending = false);
+        PriorityQueue(const PriorityQueue& rhs);
+        PriorityQueue& operator=(const PriorityQueue& rhs);
         ~PriorityQueue();
         void insert(const T& data);
         T top(const T& data);
@@ -59,6 +62,21 @@ namespace tacl
     }
 
     template<typename T, typename C>
+    PriorityQueue<T,C>::PriorityQueue(const PriorityQueue& rhs)
+    {
+        copy(rhs);
+    }
+
+    template<typename T, typename C>
+    PriorityQueue<T,C>& PriorityQueue<T, C>::operator=(const PriorityQueue<T,C>& rhs)
+    {
+        delete[] m_arr;
+        copy(rhs);
+
+        return *this;
+    }
+
+    template<typename T, typename C>
     PriorityQueue<T, C>::~PriorityQueue()
     {
         delete[] m_arr;
@@ -68,10 +86,18 @@ namespace tacl
     template<typename T, typename C>
     void PriorityQueue<T, C>::increaseSize()
     {
-        T* temp = tacl::copy(m_arr, m_size, m_size * 2)
+        T* temp = tacl::copy(m_arr, m_size, m_size * 2);
 
-            delete[] m_arr;
+        delete[] m_arr;
         m_arr = temp;
+    }
+
+    template<typename T, typename C>
+    void PriorityQueue<T, C>::copy(const PriorityQueue<T,C>& rhs)
+    {
+        m_arr = tacl::copy(rhs.m_arr, rhs.m_count, rhs.m_size);
+        m_count = rhs.m_count;
+        m_size = rhs.m_size;
     }
 
     template<typename T, typename C>
