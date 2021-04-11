@@ -33,7 +33,7 @@ namespace tacl {
 
 		std::string word;
 		while (getline(iss, word, ' ')) {
-			table.Insert(counter, word);
+			table.insert(counter, word);
 			counter++;
 		}
 
@@ -51,17 +51,25 @@ namespace tacl {
 		using namespace std::chrono;
 		auto start = high_resolution_clock::now(); //Times the function
 
-		std::cout << "Size of HashTable before removal: " << table.Size() << std::endl;
+		std::cout << "Size of HashTable before removal: " << table.size() << std::endl;
 		std::cout << "Attempting to remove \"" << value << "\"." << std::endl;
 
-		bool removed = table.RemoveValue(value);
+		int sizeBefore = table.size();
 
-		if (!removed) {
+		for (int i = 0; i < sizeBefore; ++i) {
+			if (table.search(i) == value) {
+				table.remove(i);
+			}
+		}
+
+		int sizeAfter = table.size();
+
+		if (sizeAfter == sizeBefore) {
 			std::cout << "ERROR: Key Not Found!" << std::endl;
 		}
-		else if (removed) {
+		else {
 			std::cout << "SUCCESS: Value Pair(s) Removed!" << std::endl;
-			std::cout << "Size of HashTable after removal: " << table.Size() << std::endl;
+			std::cout << "Size of HashTable after removal: " << table.size() << std::endl;
 		}
 
 		std::cout << "~~~HashTable Removal~~~" << std::endl;
@@ -81,7 +89,15 @@ namespace tacl {
 		using namespace std::chrono;
 		auto start = high_resolution_clock::now(); //Times the function
 
-		unsigned int replacedCount = table.ReplaceValue(value, newValue);
+		unsigned int replacedCount = 0;
+
+		for (int i = 0; i < table.size(); ++i) {
+			if (table.search(i) == value) {
+				table.remove(i);
+				table.insert(i, newValue);
+				++replacedCount;
+			}
+		}
 
 		std::cout << "Replaced " << replacedCount << " values of \"" << value << "\" with \"" << newValue << "\"." << std::endl;
 		std::cout << "~~~HashTable Replace~~~" << std::endl;
@@ -95,13 +111,19 @@ namespace tacl {
 
 	void HashWrapper::searchHashTable(std::string value) {
 
+		std::vector<int> positionVector;
+
 		std::cout << std::endl; //ensures spacing between key function printing
 		std::cout << "~~~HashTable Search~~~" << std::endl;
 
 		using namespace std::chrono;
 		auto start = high_resolution_clock::now(); //Times the function
 
-		std::vector<int> positionVector = table.SearchValue(value);
+		for (int i = 0; i < table.size(); ++i) {
+			if (table.search(i) == value) {
+				positionVector.push_back(i);
+			}
+		}
 
 		std::cout << "Found " << positionVector.size() << " instances of \"" << value << "\" within the HashTable! Key positions returned." << std::endl;
 
