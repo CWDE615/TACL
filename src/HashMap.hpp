@@ -4,23 +4,30 @@
 namespace tacl
 {
 	template<typename K, typename V>
-	class HashMap : protected HashTable
+	class HashMap : protected HashTable<std::pair<K,V>>
 	{
+		unsigned int hash(K key);
 	public:
 		HashMap();
 		~HashMap();
 		
-		virtual bool insert(K data);
-		virtual bool find(K data);
-		virtual V search(K data);
-		virtual bool remove(K data);
+		bool insert(K data, V value);
+		bool find(K data);
+		V search(K data);
+		bool remove(K data);
 
 	};
 	
 	template<typename K, typename V>
-	HashMap<K,V>::HashMap()
+	unsigned int HashMap<K, V>::hash(K key)
 	{
+		return hash<K>(key) % this->m_tableSize;
+	}
 
+	template<typename K, typename V>
+	HashMap<K,V>::HashMap() : HashTable()
+	{
+		
 	}
 	
 	template<typename K, typename V>
@@ -29,18 +36,33 @@ namespace tacl
 	}
 
 	template<typename K, typename V>
-	inline bool HashMap<K, V>::insert(K data)
+	bool HashMap<K, V>::insert(K key, V value)
 	{
-		return HashTable::insert(std::make_pair(K,V));
+		if (!find(key)) // if the key does not exist within the Table, create one and push back the 
+		{
+			this->m_table[hash(key)].emplace_front(make_pair(key,value));
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+
+		this->m_count++;
+
+		if (this->getLoadFactor() >= this->m_MAX_FACTOR)
+		{
+			this->rehash();
+		}
 	}
 
 	template<typename K, typename V>
-	inline bool HashMap<K, V>::find(K data)
+	inline bool HashMap<K, V>::find(K key)
 	{
-		unsigned int hashVal = hash(data);
-		for (auto finder = m_table[hashVal].begin(); finder != m_table[hashVal].end(); finder++)
+		unsigned int hashVal = hash(key);
+		for (auto finder = this->m_table[hashVal].begin(); finder != this->m_table[hashVal].end(); finder++)
 		{
-			if (finder->first == data)
+			if (finder->first == key)
 			{
 				return true;
 			}
@@ -49,15 +71,15 @@ namespace tacl
 	}
 
 	template<typename K, typename V>
-	inline V HashMap<K, V>::search(K data)
+	inline V HashMap<K, V>::search(K key)
 	{
-		if (!find(data))
+		if (!find(key))
 			throw std::exception("Element not found");
 
-		unsigned int hashVal = hash(data);
-		for (auto finder = m_table[hashVal].begin(); finder != m_table[hashVal].end(); finder++)
+		unsigned int hashVal = hash(key);
+		for (auto finder = this->m_table[hashVal].begin(); finder != this->m_table[hashVal].end(); finder++)
 		{
-			if (finder->left == data)
+			if (finder->first == key)
 			{
 				return *finder;
 			}
@@ -65,20 +87,20 @@ namespace tacl
 	}
 
 	template<typename K, typename V>
-	inline bool HashMap<K, V>::remove(K data)
+	inline bool HashMap<K, V>::remove(K key)
 	{
-		if (!find(data))
+		if (!find(key))
 			return false;
 
-		int hashVal = hash(data);
+		int hashVal = hash(key);
 		bool exists = false;
 
-		for (auto finder = m_table[hashVal].begin(); finder != m_table[hashVal].end(); finder++)
+		for (auto finder = this->m_table[hashVal].begin(); finder != this->m_table[hashVal].end(); finder++)
 		{
-			if (finder->first == data)
+			if (finder->first == key)
 			{
-				m_count--;
-				m_table[hashVal].erase(T);
+				this->m_count--;
+				this->m_table[hashVal].erase(key);
 				exists = true;
 				break;
 			}

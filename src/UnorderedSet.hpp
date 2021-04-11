@@ -4,7 +4,7 @@
 namespace tacl
 {
 	template<typename T>
-	class UnorderedSet : public HashTable
+	class UnorderedSet : public HashTable<T>
 	{
 	public:
 		UnorderedSet();
@@ -16,7 +16,7 @@ namespace tacl
 	};
 
 	template<typename T>
-	UnorderedSet<T>::UnorderedSet() {}
+	UnorderedSet<T>::UnorderedSet() : HashTable() {}
 
 	template<typename T>
 	UnorderedSet<T>::~UnorderedSet() {}

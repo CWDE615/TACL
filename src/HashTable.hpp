@@ -24,7 +24,6 @@ SOFTWARE.
 
 */
 
-#pragma once
 #include <forward_list>
 #include <iostream>
 #include <string>
@@ -95,7 +94,7 @@ namespace tacl
 	}
 
 	template<typename T>
-	inline HashTable<T>::~HashTable()
+	HashTable<T>::~HashTable()
 	{
 		delete[] m_table;
 		m_table = nullptr;
@@ -128,7 +127,6 @@ namespace tacl
 	double HashTable<T>::getLoadFactor() const
 	{
 		return ((double)m_count) / m_tableSize;
-
 	}
 
 	template<typename T>
