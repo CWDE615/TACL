@@ -29,6 +29,7 @@ SOFTWARE.
 #include <iostream>
 #include <string>
 #include <vector>
+#include "Library.hpp"
 
 /* Hash Table implementation derived from Christopher William Driggers-Ellis' submission to Stepik 10.2.1
    and retooled by both Corey and Christopher. */
@@ -38,19 +39,20 @@ namespace tacl
 	class HashTable
 	{
 
-	private:
+	protected:
 
-		const double m_MAX_FACTOR = 0.5;
+		const double m_MAX_FACTOR = 0.6;
 		std::forward_list<T>* m_table;
 		unsigned int m_count;
 		unsigned int m_tableSize;
 
 		//helpers
 		double getLoadFactor() const;
-		unsigned int hash(T data);
-		void rehash();
+		virtual unsigned int hash(T data);
+		virtual void rehash();
 
 		std::forward_list<T>* copyTable();
+		virtual void copy(const HashTable& rhs);
 		unsigned int getCount();
 		unsigned int size();
 
@@ -59,12 +61,12 @@ namespace tacl
 		HashTable();
 		HashTable(const HashTable& rhs);
 		HashTable& operator=(const HashTable& rhs);
+		virtual ~HashTable();
 
-		bool insert(T data);
-		bool find(T data);
-		T search(T data);
-		bool remove(T data);
-		int size();
+		virtual bool insert(T data);
+		virtual bool find(T data);
+		virtual T search(T data);
+		virtual bool remove(T data);
 
 	};
 
@@ -72,55 +74,55 @@ namespace tacl
 	template<typename T>
 	HashTable<T>::HashTable()
 	{
-
 		m_count = 0;
 		m_tableSize = 31;
 
-
 		m_table = new std::forward_list<T>[m_tableSize];
-
 	}
 
 	template<typename T>
 	HashTable<T>::HashTable(const HashTable& rhs)
 	{
-
+	    copy();
 	}
 
 	//Operator overloader, fairly straight forward and self explanatory.
 	template<typename T>
 	HashTable<T>& HashTable<T>::operator=(const HashTable<T>& rhs)
 	{
+		copy();
+		return *this;
+	}
+
+	template<typename T>
+	inline HashTable<T>::~HashTable()
+	{
+		delete[] m_table;
+		m_table = nullptr;
+	}
+
+	//Helper function for operator overloarder.
+	template<typename T>
+	unsigned int HashTable<T>::getCount() 
+	{
+		return m_count;
+	}
+
+	//Helper function for operator overloarder.
+	template<typename T>
+	std::forward_list<T>* HashTable<T>::copyTable() 
+	{
+		return tacl::copy(m_table, m_tableSize, m_tableSize);
+	}
+
+	template<typename T>
+	void HashTable<T>::copy(const HashTable& rhs)
+	{
 		m_table = rhs.copyTable();
 		m_count = rhs.getCount();
-		m_tableSize = rhs.getTableSize();
-		return *this;
-
+		m_tableSize = rhs.size();
 	}
 
-	//Helper function for operator overloader.
-	template<typename T>
-	unsigned int HashTable<T>::getTableSize() {
-
-		return m_tableSize;
-
-	}
-
-	//Helper function for operator overloarder.
-	template<typename T>
-	unsigned int HashTable<T>::getCount() {
-
-		return m_count;
-
-	}
-
-	//Helper function for operator overloarder.
-	template<typename T>
-	std::forward_list<T>* HashTable<T>::copyTable() {
-
-		return m_table;
-
-	}
 	//Returns the current load factor of the hash table. Load factor is calculated by number of elements within the Hashtable divided by the tables size.
 	template<typename T>
 	double HashTable<T>::getLoadFactor() const
@@ -145,7 +147,8 @@ namespace tacl
 		std::forward_list<T>* tempArr = m_table;
 		m_table = new std::forward_list<T>[m_tableSize];
 
-		for (unsigned int i = 0; i < tempSize; i++) { //copies old table into new table and rehashes each of the key values
+		for (unsigned int i = 0; i < tempSize; i++) 
+		{ 
 			m_table[i] = tempArr[i];
 		}
 
@@ -180,7 +183,7 @@ namespace tacl
 		unsigned int hashVal = hash(data);
 		for (auto finder = m_table[hashVal].begin(); finder != m_table[hashVal].end(); finder++)
 		{
-			if (finder == data)
+			if (*finder == data)
 			{
 				return true;
 			}
@@ -198,7 +201,7 @@ namespace tacl
 		unsigned int hashVal = hash(data);
 		for (auto finder = m_table[hashVal].begin(); finder != m_table[hashVal].end(); finder++)
 		{
-			if (finder == data)
+			if (*finder == data)
 			{
 				return *finder;
 			}
@@ -216,11 +219,11 @@ namespace tacl
 
 		for (auto finder = m_table[hashVal].begin(); finder != m_table[hashVal].end(); finder++)
 		{
-			if (finder == data)
+			if (*finder == data)
 			{
 				m_count--;
 				m_table[hashVal].erase(T);
-        exists = true;
+                exists = true;
 				break;
 			}
 		}
@@ -231,10 +234,8 @@ namespace tacl
 
 	//returns the size of the table in the form of a count integer
 	template<typename T>
-	int HashTable<T>::size()
+	unsigned int HashTable<T>::size()
 	{
-
-		return m_count;
-
+		return m_tableSize;
 	}
 }

@@ -30,4 +30,20 @@ namespace tacl
         std::getline(std::cin, line);
         return line.substr(1, line.size() - 1);
     }
+
+    template<typename T>
+    T* copy(T* arr, const int currSize, const int finalSize)
+    {
+        T* temp = new T[finalSize];
+
+        int copyLen = ((currSize < finalSize) ? currSize : finalSize);
+
+        for (int i = 0; i < copyLen; i++)
+        {
+            temp[i] = arr[i];
+        }
+
+        return temp;
+    }
+
 }

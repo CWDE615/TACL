@@ -78,10 +78,13 @@ namespace tacl
         void delTree(Node* root);
         void fillIdsInOrder(Node* root, std::vector<K>& ids) const;
         void removeBalHeightFixer(Node* root);
+        Node* copyTree(Node* rhsRoot);
 
     public:
         Map(); // AvlTree class constructor. Creates a Tree with a root node
         ~Map();                    // AvlTree class destructor.
+        Map(const Map& rhs);
+        Map& operator=(const Map& rhs);
 
         // Public Member Functions
         bool insert(K id, V name); // insertion and removals
@@ -93,7 +96,7 @@ namespace tacl
         bool isBalanced() const;
         bool isBalanced(Node* root) const; // test function to determine balance of the tree
 
-        int getSize();
+        int size();
     };
 
     // checks the rotation of a node
@@ -248,6 +251,19 @@ namespace tacl
         }
     }
 
+    template<typename K, typename V>
+    typename Map<K,V>::Node* Map<K, V>::copyTree(Node* rhsRoot)
+    {
+        if (rhsRoot == nullptr)
+            return nullptr;
+         
+        Node* left = copyTree(rhsRoot->m_left);
+        Node* right = copyTree(rhsRoot->m_right);
+
+        return new Node(rhsRoot.m_name, rhsRoot.m_id, left, right);
+        
+    }
+
     // Runs in the same time as the isBalanced function below it.
     // citation
     template<typename K, typename V>
@@ -281,6 +297,19 @@ namespace tacl
     {
         delTree(m_root);
         m_root = nullptr; // set m_root to null following the tree's deletion
+    }
+
+    template<typename K, typename V>
+    Map<K, V>::Map(const Map& rhs)
+    {
+        m_root = copyTree(rhs.m_root);
+    }
+
+    template<typename K, typename V>
+    Map<K,V>& Map<K, V>::operator=(const Map<K,V>& rhs)
+    {
+        delTree(m_root);
+        m_root = copyTree(rhs.m_root);
     }
 
     // return true if insertion successful. Implementation of insertion adapted from
