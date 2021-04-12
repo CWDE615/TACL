@@ -60,7 +60,7 @@ namespace tacl {
 		using namespace std::chrono;
 		auto start = high_resolution_clock::now(); //Times the function
 
-		for (int i = 0; i < avlMap.getSize(); ++i) {
+		for (int i = 0; i < avlMap.size(); ++i) {
 			if (avlMap.search(i) == value) {
 				positionVector.push_back(i);
 			}
@@ -87,7 +87,7 @@ namespace tacl {
 
 		int replacedCount = 0;
 
-		for (int i = 0; i < avlMap.getSize(); ++i) {
+		for (int i = 0; i < avlMap.size(); ++i) {
 			if (avlMap.search(i) == value) {
 				avlMap.remove(i);
 				avlMap.insert(i, newValue);
@@ -113,7 +113,7 @@ namespace tacl {
 		using namespace std::chrono;
 		auto start = high_resolution_clock::now(); //Times the function
 
-		int sizeBefore = avlMap.getSize();
+		int sizeBefore = avlMap.size();
 
 		std::cout << "Size of AVLMap before removal: " << sizeBefore << std::endl;
 		std::cout << "Attempting to remove \"" << value << "\"." << std::endl;
@@ -124,7 +124,7 @@ namespace tacl {
 			}
 		}
 
-		int sizeAfter = avlMap.getSize();
+		int sizeAfter = avlMap.size();
 
 		if (sizeBefore == sizeAfter) {
 			std::cout << "ERROR: Key Not Found!" << std::endl;

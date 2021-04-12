@@ -25,6 +25,7 @@ SOFTWARE.
 */
 
 #include <forward_list>
+#include <exception>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -37,7 +38,6 @@ namespace tacl
 	template<typename T>
 	class HashTable
 	{
-
 	protected:
 
 		const double m_MAX_FACTOR = 0.6;
@@ -50,22 +50,26 @@ namespace tacl
 		virtual unsigned int hash(T data);
 		virtual void rehash();
 
+		static std::forward_list<T>* copyTable(const HashTable& rhs);
+		static unsigned int size(const HashTable& rhs);
+		static unsigned int bucketCount(const HashTable& rhs);
 		std::forward_list<T>* copyTable();
 		virtual void copy(const HashTable& rhs);
-		unsigned int getCount();
-		unsigned int size();
 
 	public:
 
 		HashTable();
-		HashTable(const HashTable& rhs);
-		HashTable& operator=(const HashTable& rhs);
+		HashTable(const HashTable<T>& rhs);
+		HashTable& operator=(const HashTable<T>& rhs);
 		virtual ~HashTable();
 
 		virtual bool insert(T data);
 		virtual bool find(T data);
 		virtual T search(T data);
 		virtual bool remove(T data);
+
+		unsigned int size();
+		unsigned int bucketCount();
 
 	};
 
@@ -80,16 +84,16 @@ namespace tacl
 	}
 
 	template<typename T>
-	HashTable<T>::HashTable(const HashTable& rhs)
+	HashTable<T>::HashTable(const HashTable<T>& rhs)
 	{
-	    copy();
+	    copy(rhs);
 	}
 
 	//Operator overloader, fairly straight forward and self explanatory.
 	template<typename T>
 	HashTable<T>& HashTable<T>::operator=(const HashTable<T>& rhs)
 	{
-		copy();
+		copy(rhs);
 		return *this;
 	}
 
@@ -100,9 +104,27 @@ namespace tacl
 		m_table = nullptr;
 	}
 
+	template<typename T>
+	std::forward_list<T>* HashTable<T>::copyTable(const HashTable<T>& rhs)
+	{
+		return tacl::copy(rhs.m_table, rhs.m_count, rhs.m_tableSize);
+	}
+
+	template<typename T>
+	inline unsigned int HashTable<T>::size(const HashTable<T>& rhs)
+	{
+		return rhs.m_count;
+	}
+
+	template<typename T>
+	inline unsigned int HashTable<T>::bucketCount(const HashTable<T>& rhs)
+	{
+		return rhs.m_tableSize;
+	}
+
 	//Helper function for operator overloarder.
 	template<typename T>
-	unsigned int HashTable<T>::getCount() 
+	unsigned int HashTable<T>::size() 
 	{
 		return m_count;
 	}
@@ -115,11 +137,11 @@ namespace tacl
 	}
 
 	template<typename T>
-	void HashTable<T>::copy(const HashTable& rhs)
+	void HashTable<T>::copy(const HashTable<T>& rhs)
 	{
-		m_table = rhs.copyTable();
-		m_count = rhs.getCount();
-		m_tableSize = rhs.size();
+		m_table = copyTable(rhs);
+		m_count = size(rhs);
+		m_tableSize = bucketCount(rhs);
 	}
 
 	//Returns the current load factor of the hash table. Load factor is calculated by number of elements within the Hashtable divided by the tables size.
@@ -132,7 +154,8 @@ namespace tacl
 	template<typename T>
 	unsigned int HashTable<T>::hash(T data)
 	{
-		return std::hash<T>(data) % m_tableSize;
+		std::hash<T> hasher;
+		return hasher(data) % m_tableSize;
 	}
 
 
@@ -147,7 +170,11 @@ namespace tacl
 
 		for (unsigned int i = 0; i < tempSize; i++) 
 		{ 
-			m_table[i] = tempArr[i];
+			for (auto iter = tempArr[i].begin(); iter != tempArr[i].end(); iter++)
+			{
+				insert(*iter);
+				m_count--;
+			}
 		}
 
 	}
@@ -159,7 +186,6 @@ namespace tacl
 		if (!find(data)) // if the key does not exist within the Table, create one and push back the 
 		{
 			m_table[hash(data)].emplace_front(data);
-			return true;
 		}
 		else
 		{
@@ -172,6 +198,8 @@ namespace tacl
 		{
 			rehash();
 		}
+
+		return true;
 	}
 
 	// finds element in the hash table
@@ -194,7 +222,7 @@ namespace tacl
 	T HashTable<T>::search(T data)
 	{
 		if (!find(data))
-			throw std::exception("Element not found");
+			throw std::exception();
 
 		unsigned int hashVal = hash(data);
 		for (auto finder = m_table[hashVal].begin(); finder != m_table[hashVal].end(); finder++)
@@ -220,7 +248,7 @@ namespace tacl
 			if (*finder == data)
 			{
 				m_count--;
-				m_table[hashVal].erase(T);
+				m_table[hashVal].remove(data);
                 exists = true;
 				break;
 			}
@@ -232,8 +260,24 @@ namespace tacl
 
 	//returns the size of the table in the form of a count integer
 	template<typename T>
-	unsigned int HashTable<T>::size()
+	unsigned int HashTable<T>::bucketCount()
 	{
 		return m_tableSize;
+	}
+
+	template<typename T>
+	int getStringData(const std::string& value, HashTable<T>& table)
+	{
+		std::istringstream iss(value);
+		int counter = 0;
+
+		std::string word;
+		while (getline(iss, word, ' '))
+		{
+			table.insert(word);
+			counter++;
+		}
+
+		return counter;
 	}
 }

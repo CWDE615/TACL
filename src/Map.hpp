@@ -25,6 +25,7 @@ SOFTWARE.
 
 #pragma once
 #include <iostream>
+#include <exception>
 #include <string>
 #include <vector>
 
@@ -511,7 +512,7 @@ namespace tacl
     V Map<K,V>::search(K id, Node* root) const
     {
         if (root == nullptr)
-            throw std::exception("Element not found");            // return empty string signifying unsuccessful if not found
+            throw std::exception();            // return empty string signifying unsuccessful if not found
         else if (id < root->m_id)
             return search(id, root->m_left);  // go down the tree until a leaf is reached
         else if (id > root->m_id)

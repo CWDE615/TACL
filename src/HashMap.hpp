@@ -1,115 +1,122 @@
 #pragma once
 #include "HashTable.hpp"
+#include <exception>
 
 namespace tacl
 {
 	template<typename K, typename V>
-	class HashMap : protected HashTable<std::pair<K,V>>
+	class HashMap : protected HashTable<K>
 	{
-		unsigned int hash(K key);
+		std::forward_list<V>* m_vMirror;
+
+		void rehash();
 	public:
 		HashMap();
 		~HashMap();
 		
 		bool insert(K data, V value);
-		bool find(K data);
 		V search(K data);
 		bool remove(K data);
 
 	};
-	
+
 	template<typename K, typename V>
-	unsigned int HashMap<K, V>::hash(K key)
+	void HashMap<K, V>::rehash()
 	{
-		return hash<K>(key) % this->m_tableSize;
+		unsigned int tempSize = this->m_tableSize;
+		this->m_tableSize = this->m_tableSize * 2 + 1;
+		std::forward_list<K>* tempArr = this->m_table;
+		this->m_table = new std::forward_list<K>[this->m_tableSize];
+
+		for (unsigned int i = 0; i < tempSize; i++)
+		{
+			for (auto iter = tempArr.begin(); iter != tempArr.end(); iter++)
+			{
+				insert(*iter);
+				this->m_count--;
+			}
+		}
 	}
 
 	template<typename K, typename V>
-	HashMap<K,V>::HashMap() : HashTable()
+	HashMap<K,V>::HashMap() : HashTable<K>()
 	{
-		
+		m_vMirror = new std::forward_list<K>[this->m_tableSize];
 	}
 	
 	template<typename K, typename V>
 	HashMap<K,V>::~HashMap()
 	{
+		delete[] m_vMirror;
+		m_vMirror = nullptr;
 	}
 
 	template<typename K, typename V>
 	bool HashMap<K, V>::insert(K key, V value)
 	{
-		if (!find(key)) // if the key does not exist within the Table, create one and push back the 
-		{
-			this->m_table[hash(key)].emplace_front(make_pair(key,value));
-			return true;
-		}
-		else
-		{
+		unsigned int tempSize = this->m_tableSize;
+
+		if (!HashTable<K>::insert(key))
 			return false;
-		}
+		
+		unsigned int vHash = this->hash(key);
+		m_vMirror[vHash].emplace_front(value);
 
-		this->m_count++;
-
-		if (this->getLoadFactor() >= this->m_MAX_FACTOR)
+		if (this->m_tableSize > tempSize)
 		{
-			this->rehash();
+			std::forward_list<V>* temp = tacl::copy(m_vMirror, tempSize, this->m_tableSize);
+			delete[] m_vMirror;
+			m_vMirror = temp;
 		}
+
+		return true;
 	}
 
 	template<typename K, typename V>
-	inline bool HashMap<K, V>::find(K key)
-	{
-		unsigned int hashVal = hash(key);
-		for (auto finder = this->m_table[hashVal].begin(); finder != this->m_table[hashVal].end(); finder++)
-		{
-			if (finder->first == key)
-			{
-				return true;
-			}
-		}
-		return false;
-	}
-
-	template<typename K, typename V>
-	inline V HashMap<K, V>::search(K key)
+	V HashMap<K, V>::search(K key)
 	{
 		if (!find(key))
-			throw std::exception("Element not found");
+			throw std::exception();
 
 		unsigned int hashVal = hash(key);
+		auto val = m_vMirror[hashVal].begin();
+
 		for (auto finder = this->m_table[hashVal].begin(); finder != this->m_table[hashVal].end(); finder++)
 		{
-			if (finder->first == key)
+			if (*finder == key)
 			{
-				return *finder;
+				return *val;
 			}
+
+			val++;
 		}
+
 	}
 
 	template<typename K, typename V>
 	inline bool HashMap<K, V>::remove(K key)
 	{
-		if (!find(key))
-			return false;
-
 		int hashVal = hash(key);
 		bool exists = false;
+		// according to cplusplus.com, forward list provides a special iterator called before begin
+		// which serves as an argument to the functions emplace_after and remove_after.
+		auto val = m_vMirror[hashVal].before_begin();
 
 		for (auto finder = this->m_table[hashVal].begin(); finder != this->m_table[hashVal].end(); finder++)
 		{
-			if (finder->first == key)
+			if (*finder == key)
 			{
 				this->m_count--;
 				this->m_table[hashVal].erase(key);
+				m_vMirror[hashVal].erase_after(val);
 				exists = true;
 				break;
 			}
+
+			val++;
 		}
 
 		return exists;
 	}
-
-	
-
 
 }

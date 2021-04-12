@@ -5,21 +5,24 @@
 #include <chrono>
 #include <sstream>
 #include "HashTable.hpp"
+#include "Library.hpp"
 
-namespace tacl {
+namespace tacl 
+{
+
 	class HashWrapper {
 
 	private:
-		HashTable table;
+		HashTable<std::string> m_table;
 
 	public:
 		HashWrapper(std::string words); //constructor
 
-		void searchHashTable(std::string value); //Search functionality
+		bool searchHashTable(std::string value); //Search functionality
 
-		void replaceHashTable(std::string value, std::string newValue); //Replace functionality
+		bool replaceHashTable(std::string value, std::string newValue); //Replace functionality
 
-		void removeHashTable(std::string value); //Remove functionality
+		bool removeHashTable(std::string value); //Remove functionality
 
 	};
 
@@ -28,14 +31,8 @@ namespace tacl {
 		using namespace std::chrono;
 		auto start = high_resolution_clock::now(); //Times the function
 
-		std::istringstream iss(words);
-		int counter = 0;
-
-		std::string word;
-		while (getline(iss, word, ' ')) {
-			table.Insert(counter, word);
-			counter++;
-		}
+		m_table = HashTable<std::string>();
+		getStringData(words, m_table);
 
 		auto end = high_resolution_clock::now();
 		auto duration = duration_cast<microseconds>(end - start);
@@ -43,26 +40,19 @@ namespace tacl {
 
 	}
 
-	void HashWrapper::removeHashTable(std::string value) {
+	bool HashWrapper::removeHashTable(std::string value) {
 
 		std::cout << std::endl;//ensures spacing between key function printing
 		std::cout << "~~~HashTable Removal~~~" << std::endl;
 
 		using namespace std::chrono;
 		auto start = high_resolution_clock::now(); //Times the function
+		
 
-		std::cout << "Size of HashTable before removal: " << table.Size() << std::endl;
+		std::cout << "Size of HashTable before removal: " << m_table.size() << std::endl;
 		std::cout << "Attempting to remove \"" << value << "\"." << std::endl;
 
-		bool removed = table.RemoveValue(value);
-
-		if (!removed) {
-			std::cout << "ERROR: Key Not Found!" << std::endl;
-		}
-		else if (removed) {
-			std::cout << "SUCCESS: Value Pair(s) Removed!" << std::endl;
-			std::cout << "Size of HashTable after removal: " << table.Size() << std::endl;
-		}
+		bool removed = m_table.remove(value);
 
 		std::cout << "~~~HashTable Removal~~~" << std::endl;
 		std::cout << std::endl;
@@ -71,9 +61,12 @@ namespace tacl {
 		auto duration = duration_cast<microseconds>(end - start);
 		std::cout << "HashTable value removal run time in micro seconds: " << duration.count() << std::endl; //prints out how long it took the function to run
 
+		return removed;
+
+
 	}
 
-	void HashWrapper::replaceHashTable(std::string value, std::string newValue) {
+	bool HashWrapper::replaceHashTable(std::string value, std::string newValue) {
 
 		std::cout << std::endl;//ensures spacing between key function printing
 		std::cout << "~~~HashTable Replace~~~" << std::endl;
@@ -81,19 +74,28 @@ namespace tacl {
 		using namespace std::chrono;
 		auto start = high_resolution_clock::now(); //Times the function
 
-		unsigned int replacedCount = table.ReplaceValue(value, newValue);
+		bool replaced = m_table.remove(value);
+		replaced = replaced && m_table.insert(value);
 
-		std::cout << "Replaced " << replacedCount << " values of \"" << value << "\" with \"" << newValue << "\"." << std::endl;
-		std::cout << "~~~HashTable Replace~~~" << std::endl;
-		std::cout << std::endl;
+		if (replaced)
+		{
+			std::cout << "Replaced " << "\"" << value << "\" with \"" << newValue << "\"." << std::endl;
+			std::cout << "~~~HashTable Replace~~~" << std::endl;
+			std::cout << std::endl;
+		}
+		else
+		{
+			std::cout << "\"" << value << "\" does not exist or was not replaced." << std::endl;
+		}
 
 		auto end = high_resolution_clock::now();
 		auto duration = duration_cast<microseconds>(end - start);
 		std::cout << "HashTable value replace run time in micro seconds: " << duration.count() << std::endl; //prints out how long it took the function to run
 
+		return replaced;
 	}
 
-	void HashWrapper::searchHashTable(std::string value) {
+	bool HashWrapper::searchHashTable(std::string value) {
 
 		std::cout << std::endl; //ensures spacing between key function printing
 		std::cout << "~~~HashTable Search~~~" << std::endl;
@@ -101,9 +103,16 @@ namespace tacl {
 		using namespace std::chrono;
 		auto start = high_resolution_clock::now(); //Times the function
 
-		std::vector<int> positionVector = table.SearchValue(value);
+		try
+		{
+			std::string finding = m_table.search(value);
+		}
+		catch (std::exception& e)
+		{
+			return false;
+		}
 
-		std::cout << "Found " << positionVector.size() << " instances of \"" << value << "\" within the HashTable! Key positions returned." << std::endl;
+		std::cout << "Found \"" << value << "\" within the HashTable!" << std::endl;
 
 		std::cout << "~~~HashTable Search~~~" << std::endl;
 		std::cout << std::endl;
@@ -112,5 +121,6 @@ namespace tacl {
 		auto duration = duration_cast<microseconds>(end - start);
 		std::cout << "HashTable value search run time in micro seconds: " << duration.count() << std::endl; //prints out how long it took the function to run
 
+		return true;
 	}
 }

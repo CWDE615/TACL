@@ -16,7 +16,7 @@ namespace tacl
 	};
 
 	template<typename T>
-	UnorderedSet<T>::UnorderedSet() : HashTable() {}
+	UnorderedSet<T>::UnorderedSet() : HashTable<T>() {}
 
 	template<typename T>
 	UnorderedSet<T>::~UnorderedSet() {}
