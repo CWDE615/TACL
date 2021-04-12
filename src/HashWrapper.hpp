@@ -15,6 +15,7 @@ namespace tacl
 	private:
 		HashTable<std::string> m_table;
 
+
 	public:
 		HashWrapper(std::string words); //constructor
 
@@ -26,7 +27,8 @@ namespace tacl
 
 	};
 
-	HashWrapper::HashWrapper(std::string words) {
+	HashWrapper::HashWrapper(std::string words) 
+	{
 
 		using namespace std::chrono;
 		auto start = high_resolution_clock::now(); //Times the function
@@ -105,7 +107,7 @@ namespace tacl
 
 		try
 		{
-			std::string finding = m_table.search(value);
+			std::string finding = m_table.searchHash(value);
 		}
 		catch (std::exception& e)
 		{

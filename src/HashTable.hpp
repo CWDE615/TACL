@@ -28,6 +28,7 @@ SOFTWARE.
 #include <exception>
 #include <iostream>
 #include <string>
+#include <functional>
 #include <vector>
 #include "Library.hpp"
 
@@ -47,7 +48,6 @@ namespace tacl
 
 		//helpers
 		double getLoadFactor() const;
-		virtual unsigned int hash(T data);
 		virtual void rehash();
 
 		static std::forward_list<T>* copyTable(const HashTable& rhs);
@@ -63,9 +63,10 @@ namespace tacl
 		HashTable& operator=(const HashTable<T>& rhs);
 		virtual ~HashTable();
 
+		unsigned int hash(T data);
 		virtual bool insert(T data);
 		virtual bool find(T data);
-		virtual T search(T data);
+		virtual T searchHash(T data);
 		virtual bool remove(T data);
 
 		unsigned int size();
@@ -184,13 +185,9 @@ namespace tacl
 	bool HashTable<T>::insert(T data)
 	{
 		if (!find(data)) // if the key does not exist within the Table, create one and push back the 
-		{
-			m_table[hash(data)].emplace_front(data);
-		}
+		    m_table[hash(data)].emplace_front(data);
 		else
-		{
-			return false;
-		}
+	        return false;
 
 		m_count++;
 
@@ -219,7 +216,7 @@ namespace tacl
 
 	// finds element in the has table and returns a copy
 	template<typename T>
-	T HashTable<T>::search(T data)
+	T HashTable<T>::searchHash(T data)
 	{
 		if (!find(data))
 			throw std::exception();
@@ -265,11 +262,10 @@ namespace tacl
 		return m_tableSize;
 	}
 
-	template<typename T>
-	int getStringData(const std::string& value, HashTable<T>& table)
+	int getStringData(const std::string& value, HashTable<std::string>& table)
 	{
 		std::istringstream iss(value);
-		int counter = 0;
+		unsigned int counter = 0;
 
 		std::string word;
 		while (getline(iss, word, ' '))

@@ -255,9 +255,9 @@ TEST_CASE("AVLMap Search Value Remove Value Replace Value", "[insert AVLMAP][ins
 
 }
 
-//HashTable Tests
+//HashTable and HashMap Tests
 
-TEST_CASE("HashTable Insert 100k Words", "[insert HashTable]") //tests insertion into HashTable
+TEST_CASE("Hash Insert 100k Words", "[insert HashTable]") //tests insertion into HashTable
 {
 	std::string words = std::to_string(0); //This test inserts 0-9 100k times into an AVLMap, and then removes all 100k elements. Returns true if the size is equal to 0.
 	for (int i = 1; i < 100000; i++) {
@@ -269,30 +269,38 @@ TEST_CASE("HashTable Insert 100k Words", "[insert HashTable]") //tests insertion
 
 	REQUIRE(hashedTable.size() == 10);
 
+	tacl::HashMap<std::string, tacl::UnorderedSet<unsigned int>> hashedMap;
+	std::vector<std::string> temp;
+	int counter2 = tacl::getStringData(words, temp, hashedMap);
+
+	REQUIRE(temp.size() == 100000);
+	REQUIRE(hashedMap.size() == 10);
 }
 
-TEST_CASE("HashTable Remove 100k Words", "[insert HashTable][remove key HashTable]") //tests removal of the HashTable
+TEST_CASE("Hash Remove 100k Words", "[insert HashTable][remove key HashTable]") //tests removal of the HashTable
 {
 	std::string words = std::to_string(0); //This test inserts 0-9 100k times into an AVLMap, and then removes all 100k elements. Returns true if the size is equal to 0.
 	for (int i = 1; i < 100000; i++) {
-		words = words + " " + std::to_string(i % 10);
+		words = words + " " + std::to_string(i);
 	}
 
 	tacl::HashTable<std::string> hashedTable;
 	int counter = tacl::getStringData(words, hashedTable);
 
-	for (int i = 0; i < 10; i++) {
-		hashedTable.remove(std::to_string(i));
+	REQUIRE_FALSE(hashedTable.remove(" "));
+
+	for (int i = 0; i < 100000; i++) {
+		REQUIRE(hashedTable.remove(std::to_string(i)));
 	}
 
-	hashedTable.remove(" ");
+	REQUIRE_FALSE(hashedTable.remove(" "));
 
 	REQUIRE(hashedTable.size() == 0);
 	//Passes if the HashTable size is 0 (or empty)
 
 }
 
-TEST_CASE("HashTable Search Value Remove Value Replace Value", "[insert HashTable][replace value HashTable][search value HashTable][remove value HashTable]") //tests all functionality of the HashTable
+TEST_CASE("Hash Search Value Remove Value Replace Value", "[insert HashTable][replace value HashTable][search value HashTable][remove value HashTable]") //tests all functionality of the HashTable
 {
 	std::string words = std::to_string(0);
 	for (int i = 1; i < 100000; i++) {
@@ -305,7 +313,7 @@ TEST_CASE("HashTable Search Value Remove Value Replace Value", "[insert HashTabl
 	// remove the 2 from the heap
 	REQUIRE(hashedTable.remove("2"));
     REQUIRE(hashedTable.insert("2 replacement string"));
-	REQUIRE(hashedTable.search("2 replacement string") == "2 replacement string");
+	REQUIRE(hashedTable.searchHash("2 replacement string") == "2 replacement string");
 	REQUIRE(hashedTable.size() == 10);
 
 	bool removed = hashedTable.remove("2 replacement string") && !hashedTable.remove("2");
@@ -315,7 +323,7 @@ TEST_CASE("HashTable Search Value Remove Value Replace Value", "[insert HashTabl
 	//Passes tests if "2 replacement string" is successfully removed from the hash table and the table size drops down to 90k.
 }
 
-TEST_CASE("HashTable Remove Value", "[insert HashTable][remove value HashTable]") //tests remove value functionality of the HashTable
+TEST_CASE("Hash Remove Value", "[insert HashTable][remove value HashTable]") //tests remove value functionality of the HashTable
 {
 	std::string words = std::to_string(0);
 	for (int i = 1; i < 100000; i++) {
