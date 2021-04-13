@@ -126,7 +126,7 @@ namespace tacl
     {
         if (m_count == 0)
         {
-            throw std::exception("m_size of Queue is Empty!");
+            throw std::exception();
         }
         else
         {

@@ -159,7 +159,7 @@ namespace tacl
 	T Heap<T,C>::top(T& data)
 	{
 		if (m_count == 0)
-			throw std::exception("Heap is empty");
+			throw std::exception();
 		else
 			return m_heap[0];
 	}
@@ -168,7 +168,7 @@ namespace tacl
 	void Heap<T,C>::extract()
 	{
 		if (m_count = 0)
-			throw std::exception("Heap is empty");
+			throw std::exception();
 
 		m_heap[0] = m_heap[m_size - 1];
 		heapifyDown(0);
