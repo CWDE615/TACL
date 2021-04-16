@@ -40,7 +40,7 @@ namespace tacl
     {
         struct Node
         {
-            // members of the node class. As a convention, names of all member variables in this implementation start with m_
+            // members of the node class. As a convention, names of all member variables in this implementation start with
             V m_name;    // the name of the node
             K m_id;      // their id
             int m_bal;      // the node's current balance
@@ -92,7 +92,7 @@ namespace tacl
         // Public Member Functions
         bool insert(K id, V name); // insertion and removals
         bool remove(K id);
-        V search(K id) const;      // search by id
+        V& search(K id) const;      // search by id
 
         int countLevels();                 // returns the number of levels in the tree
         void fillIdsInOrder(std::vector<K>& ids) const; // gives a public overload of fillIdsInOrder for testing
@@ -526,7 +526,7 @@ namespace tacl
     // search for an element by its id. Runs in O(log(n)) in the worst case, as it calls the id-based search function and O(1) in the best case, for idValidation
     // is O(1) in any case.
     template<typename K, typename V>
-    V Map<K, V>::search(K id) const
+    V& Map<K, V>::search(K id) const
     {
         return search(id, m_root);
     }
@@ -607,9 +607,32 @@ namespace tacl
         return m_size;
     }
 
-    int getStringData(const std::string& data, std::vector<std::string> vec, Map<std::string, tacl::UnorderedSet<unsigned int>>& map)
+    int getStringData(const std::string& value, std::vector<std::string>& vec, Map<std::string, tacl::UnorderedSet<unsigned int>>& map)
     {
-        // TODO set this up.
+        std::istringstream iss(value);
+        unsigned int counter = 0;
+
+        std::string word;
+        while (getline(iss, word, ' '))
+        {
+            vec.push_back(word);
+
+            try
+            {
+                UnorderedSet<unsigned int>& posSet = map.search(word);
+                posSet.insert(counter);
+            }
+            catch (std::exception& e)
+            {
+                UnorderedSet<unsigned int> temp;
+                temp.insert(counter);
+                map.insert(word, temp);
+            }
+
+            counter++;
+        }
+
+        return counter;
     }
 }
 

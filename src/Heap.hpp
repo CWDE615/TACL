@@ -22,17 +22,19 @@ To request a feature or report bugs, please use our gitHub page.
 */
 
 #pragma once
+#include <functional> // required for std::greater and std::less
+#include <exception>
 #include "Library.hpp"
 
 namespace tacl
 {
-	template<typename T, typename C = std::less<T>>
+	template<typename T>
 	class Heap
 	{
 		// Variables
-		bool m_descending;
-		int m_size;
-		int m_count;
+		bool m_MAX;
+		unsigned int m_size;
+		unsigned int m_count;
 		T* m_heap;
 
 		// Private Funcitons
@@ -43,34 +45,35 @@ namespace tacl
 
 	public:
 		// Public Funcitons
-		Heap();
+		Heap(bool max = true);
 		Heap(const Heap& rhs);
 		Heap& operator=(const Heap& rhs);
 		~Heap();
+
 		void insert(T& data);
-		T top(T& data);
-		void extract();
+		T top();
+		bool extract();
+		unsigned int size();
 
 	};
 
 
-	template<typename T, typename C>
-	Heap<T,C>::Heap()
+	template<typename T>
+	Heap<T>::Heap(bool max) : m_MAX(max)
 	{
-		m_descending = false;
 		m_size = 16;
 		m_count = 0;
 		m_heap = new T[m_size];
 	}
 
-	template<typename T, typename C>
-	Heap<T, C>::Heap(const Heap& rhs)
+	template<typename T>
+	Heap<T>::Heap(const Heap<T>& rhs) : m_MAX(rhs.m_MAX)
 	{
 		copy(rhs);
 	}
 
-	template<typename T, typename C>
-	Heap<T,C>& Heap<T,C>::operator=(const Heap<T,C>& rhs)
+	template<typename T>
+	Heap<T>& Heap<T>::operator=(const Heap<T>& rhs)
 	{
 		delete[] m_heap;
 		copy(rhs);
@@ -78,19 +81,29 @@ namespace tacl
 		return *this;
 	}
 
-	template<typename T, typename C>
-	Heap<T,C>::~Heap()
+	template<typename T>
+	Heap<T>::~Heap()
 	{
 		delete[] m_heap;
 		m_heap = nullptr;
 	}
 
-	template<typename T, typename C>
-	void Heap<T,C>::heapifyUp(int index)
+	template<typename T>
+	void Heap<T>::heapifyUp(int index)
 	{
 		while (index != 0)
 		{
-			if (!C(m_heap[index], m_heap[(index - 1) / 2]))
+			bool up = false;
+			if (m_MAX)
+			{
+			    up = (m_heap[index] > m_heap[(index - 1) / 2]);
+			}
+			else
+			{
+				up = (m_heap[index] < m_heap[(index - 1) / 2]);
+			}
+
+			if (up)
 			{
 				T temp = m_heap[index];
 				m_heap[index] = m_heap[(index - 1) / 2];
@@ -100,25 +113,50 @@ namespace tacl
 			{
 				break;
 			}
+
+			index = (index-1)/2;
 		}
 	}
 
 	/* Heapify down algorithm derived from Christopher's submission to Stepik exercise 6.1.1 */
-	template<typename T, typename C>
-	void Heap<T,C>::heapifyDown(int index)
+	template<typename T>
+	void Heap<T>::heapifyDown(int index)
 	{
+		if (2 * index + 1 >= m_count)
+			return;
+
 		int next;
-		if (2 * index + 2 >= m_size) // check whether the current elemnt has a right child in the heap
+		if (2 * index + 2 >= m_count) // check whether the current elemnt has a right child in the heap
 		{
 			next = 2 * index + 1;    // if the right child is not in the heap, then the left is
 		}                            // if neither were, it would be caught above
 		else // both are in range of the heap
 		{
-			// the next index is 2*index + 1 or 2*index + 2, which ever has a lesser entry
-			next = (!C(m_heap[2 * index + 1], m_heap[2 * index + 2]) ? 2 * index + 1 : 2 * index + 2);
+			bool left = false;
+			if (m_MAX)
+			{
+				left = (m_heap[2 * index + 1] > m_heap[2 * index + 2]);
+			}
+			else
+			{
+				left = (m_heap[2 * index + 1] < m_heap[2 * index + 2]);
+			}
+			
+			// the next index is 2*index + 1 or 2*index + 2, which ever has the appropriate entry
+			next = (left ? 2 * index + 1 : 2 * index + 2);
 		}
 
-		if (C(m_heap[index], m_heap[next]))
+		bool go = false;
+		if (m_MAX)
+		{
+			go = (m_heap[index] < m_heap[next]);
+		}
+		else
+		{
+			go = (m_heap[index] > m_heap[next]);
+		}
+
+		if (go)
 		{
 			T temp = m_heap[index];
 			m_heap[index] = m_heap[next];
@@ -128,35 +166,37 @@ namespace tacl
 
 	}
 
-	template<typename T, typename C>
-	void Heap<T, C>::increaseSize()
+	template<typename T>
+	void Heap<T>::increaseSize()
 	{
 		T* temp = tacl::copy(m_heap, m_size, m_size * 2);
 
+		m_size *= 2;
 		delete[] m_heap;
 		m_heap = temp;
 	}
 
-	template<typename T, typename C>
-	void Heap<T, C>::copy(const Heap& rhs)
+	template<typename T>
+	void Heap<T>::copy(const Heap& rhs)
 	{
 		m_heap = tacl::copy(rhs.m_heap, rhs.m_count, rhs.m_size);
 		m_count = rhs.m_count;
 		m_size = rhs.m_size;
 	}
 
-	template<typename T, typename C>
-	void Heap<T,C>::insert(T& data)
+	template<typename T>
+	void Heap<T>::insert(T& data)
 	{
-		m_heap[m_count++] = data;
-		heapifyUp();
+		m_heap[m_count] = data;
+		heapifyUp(m_count);
+		m_count++;
 
 		if (m_count == m_size)
 			increaseSize();
 	}
 
-	template<typename T, typename C>
-	T Heap<T,C>::top(T& data)
+	template<typename T>
+	T Heap<T>::top()
 	{
 		if (m_count == 0)
 			throw std::exception();
@@ -164,14 +204,21 @@ namespace tacl
 			return m_heap[0];
 	}
 
-	template<typename T, typename C>
-	void Heap<T,C>::extract()
+	template<typename T>
+	bool Heap<T>::extract()
 	{
-		if (m_count = 0)
-			throw std::exception();
+		if (m_count == 0)
+			return false;
 
-		m_heap[0] = m_heap[m_size - 1];
+		m_heap[0] = m_heap[--m_count];
 		heapifyDown(0);
+		return true;
+	}
+
+	template<typename T>
+	unsigned int Heap<T>::size()
+	{
+		return m_count;
 	}
 
 }

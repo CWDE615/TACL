@@ -38,6 +38,7 @@ namespace tacl
 		HashMap<std::string, tacl::UnorderedSet<unsigned int>> m_table;
 	    std::vector<std::string> m_dataVector;
 
+
 	public:
 
 		HashMapWrapper(const std::string& words);
@@ -58,10 +59,10 @@ namespace tacl
 
 		auto end = high_resolution_clock::now();
 		auto duration = duration_cast<microseconds>(end - start);
-		std::cout << "AVLMap initialization run time in micro seconds: " << duration.count() << std::endl;
+		std::cout << "HashMap initialization run time in micro seconds: " << duration.count() << std::endl;
 	}
 
-	bool tacl::HashMapWrapper::searchHashMap(const std::string& target)
+	bool tacl::HashMapWrapper::searchHashMap(const std::string& value)
 	{
 		
 	}

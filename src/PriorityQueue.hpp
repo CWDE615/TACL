@@ -21,20 +21,19 @@ To request a feature or report bugs, please use our gitHub page.
 */
 
 #pragma once
-#include <iostream>
+#include <functional>
 #include <exception>
-#include <string>
 #include "Library.hpp"
 
 namespace tacl
 {
-    template<typename T, typename C = std::less<T>> // default as max heap
+    template<typename T> // default as max heap
     class PriorityQueue
     {
         // Variables
-        bool m_descending;
-        int m_size;
-        int m_count;
+        unsigned int m_size;
+        unsigned int m_count;
+        const bool m_MAX;
         T* m_arr;
 
         void increaseSize();
@@ -43,32 +42,33 @@ namespace tacl
     public:
 
         // Fuctions
-        PriorityQueue(bool m_descending = false);
+        PriorityQueue(bool max = true);
         PriorityQueue(const PriorityQueue& rhs);
         PriorityQueue& operator=(const PriorityQueue& rhs);
         ~PriorityQueue();
+
         void insert(const T& data);
-        T top(const T& data);
-        bool extract(const T& data);
+        T top();
+        bool extract();
+        unsigned int size();
     };
 
-    template<typename T, typename C>
-    PriorityQueue<T, C>::PriorityQueue(bool descending)
+    template<typename T>
+    PriorityQueue<T>::PriorityQueue(bool max) : m_MAX(max)
     {
-        m_descending = descending;
         m_count = 0;
         m_size = 16;
         m_arr = new T[m_size];
     }
 
-    template<typename T, typename C>
-    PriorityQueue<T,C>::PriorityQueue(const PriorityQueue& rhs)
+    template<typename T>
+    PriorityQueue<T>::PriorityQueue(const PriorityQueue& rhs) : m_MAX(rhs.m_MAX)
     {
         copy(rhs);
     }
 
-    template<typename T, typename C>
-    PriorityQueue<T,C>& PriorityQueue<T, C>::operator=(const PriorityQueue<T,C>& rhs)
+    template<typename T>
+    PriorityQueue<T>& PriorityQueue<T>::operator=(const PriorityQueue<T>& rhs)
     {
         delete[] m_arr;
         copy(rhs);
@@ -76,41 +76,51 @@ namespace tacl
         return *this;
     }
 
-    template<typename T, typename C>
-    PriorityQueue<T, C>::~PriorityQueue()
+    template<typename T>
+    PriorityQueue<T>::~PriorityQueue()
     {
         delete[] m_arr;
         m_arr = nullptr;
     }
 
-    template<typename T, typename C>
-    void PriorityQueue<T, C>::increaseSize()
+    template<typename T>
+    void PriorityQueue<T>::increaseSize()
     {
         T* temp = tacl::copy(m_arr, m_size, m_size * 2);
 
+        m_size *= 2;
         delete[] m_arr;
         m_arr = temp;
     }
 
-    template<typename T, typename C>
-    void PriorityQueue<T, C>::copy(const PriorityQueue<T,C>& rhs)
+    template<typename T>
+    void PriorityQueue<T>::copy(const PriorityQueue<T>& rhs)
     {
         m_arr = tacl::copy(rhs.m_arr, rhs.m_count, rhs.m_size);
         m_count = rhs.m_count;
         m_size = rhs.m_size;
     }
 
-    template<typename T, typename C>
-    void PriorityQueue<T, C>::insert(const T& data)
+    template<typename T>
+    void PriorityQueue<T>::insert(const T& data)
     {
         if (m_count == m_size)
             increaseSize();
 
-        int arr[m_count] = data;
-
-        for (int i = m_count - 1; i > 0; i--)
+        int i;
+        for (i = m_count; i > 0; i--)
         {
-            if (C(m_arr[i - 1], m_arr[i])) // the order enforces the fact that less<T> makes a minheap
+            bool stop = false;
+            if (m_MAX)
+            {
+                stop = m_arr[i - 1] < data;
+            }
+            else
+            {
+                stop = m_arr[i - 1] > data;
+            }
+
+            if (stop)
             {
                 m_arr[i] = data;
                 m_count++;
@@ -119,10 +129,16 @@ namespace tacl
 
             m_arr[i] = m_arr[i - 1];
         }
+
+        if (i == 0)
+        {
+            m_arr[0] = data;
+            m_count++;
+        }
     }
 
-    template<typename T, typename C>
-    T PriorityQueue<T, C>::top(const T& data)
+    template<typename T>
+    T PriorityQueue<T>::top()
     {
         if (m_count == 0)
         {
@@ -134,8 +150,8 @@ namespace tacl
         }
     }
 
-    template<typename T, typename C>
-    bool PriorityQueue<T, C>::extract(const T& data)
+    template<typename T>
+    bool PriorityQueue<T>::extract()
     {
         if (m_count > 0)
         {
@@ -144,5 +160,11 @@ namespace tacl
         }
 
         return false;
+    }
+
+    template<typename T>
+    unsigned int PriorityQueue<T>::size()
+    {
+        return m_count;
     }
 }

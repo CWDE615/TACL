@@ -60,11 +60,8 @@ namespace tacl
 	template<typename K, typename V>
 	bool HashMap<K, V>::insert(K key, V value)
 	{
-		unsigned int tempSize = this->m_tableSize;
-
 		if (HashTable<K>::find(key))
 			return false;
-
 
 		unsigned int vHash = this->hash(key);
 		this->m_table[vHash].emplace_front(key);
@@ -102,7 +99,7 @@ namespace tacl
 	}
 
 	template<typename K, typename V>
-	inline bool HashMap<K, V>::remove(K key)
+	bool HashMap<K, V>::remove(K key)
 	{
 		int hashVal = this->hash(key);
 		bool exists = false;
@@ -128,13 +125,13 @@ namespace tacl
 	}
 
 	template<typename K, typename V>
-	inline unsigned int HashMap<K, V>::size()
+	unsigned int HashMap<K, V>::size()
 	{
 		return this->m_count;
 	}
 
 	template<typename K, typename V>
-	inline unsigned int HashMap<K, V>::bucketCount()
+	unsigned int HashMap<K, V>::bucketCount()
 	{
 		return this->m_tableSize;
 	}

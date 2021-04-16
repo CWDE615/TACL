@@ -295,7 +295,20 @@ TEST_CASE("Hash Remove 100k Words", "[insert HashTable][remove key HashTable]") 
 
 	REQUIRE_FALSE(hashedTable.remove(" "));
 
+	tacl::HashMap<std::string, tacl::UnorderedSet<unsigned int>> hashedMap;
+	std::vector<std::string> temp;
+	int counter2 = tacl::getStringData(words, temp, hashedMap);
+
+	REQUIRE_FALSE(hashedMap.remove(" "));
+
+	for (int i = 0; i < 100000; i++) {
+		REQUIRE(hashedMap.remove(std::to_string(i)));
+	}
+
+	REQUIRE_FALSE(hashedMap.remove(" "));
+
 	REQUIRE(hashedTable.size() == 0);
+	REQUIRE(hashedMap.size() == 0);
 	//Passes if the HashTable size is 0 (or empty)
 
 }
@@ -310,17 +323,31 @@ TEST_CASE("Hash Search Value Remove Value Replace Value", "[insert HashTable][re
 	tacl::HashTable<std::string> hashedTable;
 	int counter = tacl::getStringData(words, hashedTable);
 
-	// remove the 2 from the heap
+	tacl::HashMap<std::string, tacl::UnorderedSet<unsigned int>> hashedMap;
+	std::vector<std::string> temp;
+	int counter2 = tacl::getStringData(words, temp, hashedMap);
+
+	// remove the 2 from the hashtable
 	REQUIRE(hashedTable.remove("2"));
-    REQUIRE(hashedTable.insert("2 replacement string"));
+	REQUIRE(hashedTable.insert("2 replacement string"));
 	REQUIRE(hashedTable.searchHash("2 replacement string") == "2 replacement string");
 	REQUIRE(hashedTable.size() == 10);
 
-	bool removed = hashedTable.remove("2 replacement string") && !hashedTable.remove("2");
+	REQUIRE(hashedMap.remove("2"));
+	tacl::UnorderedSet<unsigned int> temp2;
+	temp2.insert(12345);
+	REQUIRE(hashedMap.insert("2 replacement string", temp2));
+	REQUIRE(hashedMap.search("2 replacement string").find(12345));
+	REQUIRE(hashedMap.size() == 10);
 
+	// passess tests if it's able to remove the 2 replacement string added but not the 2 that already was removed
+	bool removed = hashedTable.remove("2 replacement string") && !hashedTable.remove("2");
 	REQUIRE(removed);
 	REQUIRE(hashedTable.size() == 9);
-	//Passes tests if "2 replacement string" is successfully removed from the hash table and the table size drops down to 90k.
+
+	bool removedMap = hashedMap.remove("2 replacement string") && !hashedMap.remove("2");
+	REQUIRE(removedMap);
+	REQUIRE(hashedMap.size() == 9);
 }
 
 TEST_CASE("Hash Remove Value", "[insert HashTable][remove value HashTable]") //tests remove value functionality of the HashTable
@@ -333,9 +360,63 @@ TEST_CASE("Hash Remove Value", "[insert HashTable][remove value HashTable]") //t
 	tacl::HashTable<std::string> hashedTable;
 	int counter = tacl::getStringData(words, hashedTable);
 
+	tacl::HashMap<std::string, tacl::UnorderedSet<unsigned int>> hashedMap;
+	std::vector<std::string> temp;
+	int counter2 = tacl::getStringData(words, temp, hashedMap);
 
-	bool removed = hashedTable.remove("22");
+	bool removedMap = hashedMap.remove("NAN");
+	bool removed = hashedTable.remove("NAN");
 
-	REQUIRE(removed);
-	REQUIRE(hashedTable.size() == 99999);
+	REQUIRE_FALSE(removed);
+	REQUIRE_FALSE(removedMap);
+	
+	REQUIRE(hashedTable.size() == 100000);
+	REQUIRE(hashedMap.size() == 100000);
+
+	for (int i = 0; i < 50000; i++)
+	{
+		REQUIRE(hashedTable.remove(std::to_string(i)));
+		REQUIRE(hashedMap.remove(std::to_string(i)));
+	}
+
+	REQUIRE(hashedMap.size() == 50000);
+	REQUIRE(hashedTable.size() == 50000);
+}
+
+TEST_CASE("PQ", "[PQ initialization][PQ ops]")
+{
+	// does heap sort on this vector
+	std::vector<int> sortMe = { 9,0,1,4,5,2,6,7,3,8 };
+	std::vector<int> sortMe2 = sortMe;
+	tacl::PriorityQueue<int> priorities(false);
+	tacl::Heap<int> heapified(false);
+
+	for (auto iter = sortMe.begin(); iter != sortMe.end(); iter++)
+	{
+		priorities.insert(*iter);
+		heapified.insert(*iter);
+	}
+
+	int i = 0;
+	while (priorities.size() > 0 && heapified.size() > 0)
+	{
+		sortMe[i] = priorities.top();
+		sortMe2[i] = heapified.top();
+		REQUIRE(heapified.extract());
+		REQUIRE(priorities.extract());
+		i++;
+	}
+
+	REQUIRE(i == sortMe.size());
+
+	for (int j = 0; j < sortMe.size(); j++)
+	{
+		std::cout << sortMe[j] << " " << sortMe2[j] << std::endl;
+	}
+
+	for (int j = 0; j < sortMe.size(); j++)
+	{
+		REQUIRE(sortMe[j] == j);
+		REQUIRE(sortMe2[j] == j);
+	}
 }

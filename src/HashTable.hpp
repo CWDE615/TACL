@@ -108,7 +108,7 @@ namespace tacl
 	template<typename T>
 	std::forward_list<T>* HashTable<T>::copyTable(const HashTable<T>& rhs)
 	{
-		return tacl::copy(rhs.m_table, rhs.m_count, rhs.m_tableSize);
+		return tacl::copy(rhs.m_table, rhs.m_tableSize, rhs.m_tableSize);
 	}
 
 	template<typename T>

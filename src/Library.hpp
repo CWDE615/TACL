@@ -32,7 +32,7 @@ namespace tacl
     }
 
     template<typename T>
-    T* copy(T* arr, const int currSize, const int finalSize)
+    T* copy(T* arr, const unsigned int currSize, const unsigned int finalSize)
     {
         T* temp = new T[finalSize];
 
