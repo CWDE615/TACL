@@ -1,3 +1,4 @@
+#pragma once
 /*
 MIT License
 Copyright (c) 2021 Christopher William Driggers-Ellis
@@ -21,7 +22,6 @@ This project was created by the members of Lucky13 for our final project in COP3
 To request a feature or report bugs, please use our gitHub page.
 */
 
-#pragma once
 #include <functional> // required for std::greater and std::less
 #include <exception>
 #include "Library.hpp"

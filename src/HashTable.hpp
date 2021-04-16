@@ -112,13 +112,13 @@ namespace tacl
 	}
 
 	template<typename T>
-	inline unsigned int HashTable<T>::size(const HashTable<T>& rhs)
+	unsigned int HashTable<T>::size(const HashTable<T>& rhs)
 	{
 		return rhs.m_count;
 	}
 
 	template<typename T>
-	inline unsigned int HashTable<T>::bucketCount(const HashTable<T>& rhs)
+	unsigned int HashTable<T>::bucketCount(const HashTable<T>& rhs)
 	{
 		return rhs.m_tableSize;
 	}

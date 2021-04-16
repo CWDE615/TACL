@@ -23,7 +23,7 @@ namespace tacl {
 		void getPositions(const std::string& target, UnorderedSet<unsigned int>& positionSet, Map<std::string, UnorderedSet<unsigned int>>& map);
 		void getPositions(const std::string& target, UnorderedSet<unsigned int>& positionSet, HashMap<std::string, UnorderedSet<unsigned int>>& map);
 		std::string setupDS(std::string& value, UnorderedSet<unsigned int>& positionSet, bool ordered);
-		void display(UnorderedSet<unsigned int>& positionSet, bool ordered);
+		void display(UnorderedSet<unsigned int>& positionSet, bool ordered, std::string word);
 
 	public:
 
@@ -77,17 +77,43 @@ namespace tacl {
 
 	}
 
-	inline void tacl::MapWrapper::display(UnorderedSet<unsigned int>& positionSet, bool ordered)
+	void tacl::MapWrapper::display(UnorderedSet<unsigned int>& positionSet, bool ordered, std::string word)
 	{
 		std::ofstream file(m_filename);
 
-		if (ordered)
-			std::vector<std::string>& stream = m_dataVectorMap;
-		else
-			std::vector<std::string>& stream = m_dataVectorHMap;
+		std::vector<std::string>* stream = &m_dataVectorMap;
+		
+	    if (ordered)
+			stream = &m_dataVectorHMap;
 
-		// ouput
+		file << "Found " << positionSet.size() << " instances of " << word << " in the file " << m_filename << std::endl;
+
+		for (unsigned int i = 0; i < stream->size(); i++)
+		{
+			if (positionSet.find(i))
+			{
+				file << "Word found at position: " << i << std::endl;
+
+				int begin = i - 20;
+				int end = i + 20;
+
+				if (begin < 0)
+					begin = 0;
+				if (end >= stream->size())
+					end = stream->size() - 1;
+
+				for (unsigned int j = begin; j <= end; j++)
+				{
+					file << stream->at(i) << " ";
+				}
+
+				file << std::endl;
+			}
+		}
 	}
+
+	// extract. Just don't print the word when passed
+	// replace. Replace it with another word instead of ignoring it
 
 	MapWrapper::MapWrapper(std::string words, std::string filename) : m_filename(filename)
 	{
