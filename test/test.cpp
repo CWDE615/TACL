@@ -411,11 +411,6 @@ TEST_CASE("PQ", "[PQ initialization][PQ ops]")
 
 	for (int j = 0; j < sortMe.size(); j++)
 	{
-		std::cout << sortMe[j] << " " << sortMe2[j] << std::endl;
-	}
-
-	for (int j = 0; j < sortMe.size(); j++)
-	{
 		REQUIRE(sortMe[j] == j);
 		REQUIRE(sortMe2[j] == j);
 	}
