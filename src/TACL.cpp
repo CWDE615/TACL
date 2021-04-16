@@ -32,7 +32,7 @@ To request a feature or report bugs, please use our gitHub page.
 
 int main(int argc, char* argv[])
 {
-	cxxopts::Options menu("Text Analysis Via Command Line (TACL)", "Simple text analysis functionality via the command line");
+	cxxopts::Options menu("Text Analysis Via Command Line (TACL)", "Simple text analysis functionality using the command line");
 
 	menu.add_options("File IO")
 		("l,load_file", "Load File for Analysis", cxxopts::value<std::string>())
@@ -48,6 +48,12 @@ int main(int argc, char* argv[])
 	    ("replace_avl", "Operation set to Replacement with an AVL Tree")
 	    ("r,replace_map", "Operation set to Replacement with an Unordered Map of Sets")
 	    ;
+
+	menu.add_options("Arguments")
+		("w,word", "Word for search/extract/replace", cxxopts::value<std::string>())
+		("n,number", "Number of words in frequency list", cxxopts::value<unsigned int>())
+		("ascendging", "Sort Frequency List in Ascending Order", cxxopts::value<bool>()->default_value("false"))
+		;
 	
 	menu.help({ "File IO" , "Operations" });
 
@@ -121,5 +127,4 @@ int main(int argc, char* argv[])
 	}
 
 	return 0;
-	
 }

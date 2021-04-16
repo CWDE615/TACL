@@ -27,8 +27,8 @@ To request a feature or report bugs, please use our gitHub page.
 
 #pragma once
 #include "Map.hpp" // Avl tree implementation
-#include "MapSet.hpp"  // map of sets for search
 #include "PriorityQueue.hpp" // priority queue implementations
+#include <fstream>
 #include <string>
 
 namespace tacl
@@ -36,6 +36,50 @@ namespace tacl
 	std::string getFilename(const std::string& input, std::string prefix)
 	{
 		return prefix + input;
+	}
+	
+	std::vector<std::string>* loadFile(const std::string& input)
+	{
+		std::string word;
+		std::ifstream file(input);
+		std::vector<std::string>* dataVector = nullptr;
+
+		if (!file.is_open())
+			return dataVector;
+
+		dataVector = new std::vector<std::string>;
+
+		while (std::getline(file, word, ' ')) 
+		{
+			dataVector->push_back(word);
+		}
+
+		file.close();      // close the file
+		return dataVector; // does not leak here. caller is responsible for deallocating the memory
+	}
+
+	bool outputFile(const std::string& output, const std::vector<std::string> dataVector, int wordPerLine = 24)
+	{
+		std::ofstream file(output);
+		int i = 0;
+
+		if (!file.is_open())
+			return false;
+
+		for (auto head = dataVector.begin(); head != dataVector.end(); head++)
+		{
+			file << *head << " ";
+			i++;
+
+			if (i > wordPerLine)
+			{
+				file << std::endl;
+				i = 0;
+			}
+		}
+
+		file.close();
+		return true;
 	}
 
 	void wordFrequencyHeap(const std::string& input, const std::string& output)
