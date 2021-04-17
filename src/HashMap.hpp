@@ -1,6 +1,8 @@
 #pragma once
 #include "HashTable.hpp"
+#include "UnorderedSet.hpp"
 #include <exception>
+#include <sstream>
 
 namespace tacl
 {
@@ -137,7 +139,7 @@ namespace tacl
 	}
 
 
-	int getStringData(const std::string& value, std::vector<std::string>& vec, HashMap<std::string,tacl::UnorderedSet<unsigned int>>& table)
+	unsigned int getStringData(const std::string& value, std::vector<std::string>& vec, HashMap<std::string,tacl::UnorderedSet<unsigned int>>& table)
 	{
 		std::istringstream iss(value);
 		unsigned int counter = 0;

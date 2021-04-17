@@ -10,6 +10,7 @@ namespace tacl
 		UnorderedSet();
 		~UnorderedSet();
 
+		std::vector<T> members();
 		static UnorderedSet setUnion(const UnorderedSet& a, const UnorderedSet& b);
 		static UnorderedSet setIntersection(const UnorderedSet& a, const UnorderedSet& b);
 		static UnorderedSet setDifference(const UnorderedSet& a, const UnorderedSet& b);
@@ -20,6 +21,23 @@ namespace tacl
 
 	template<typename T>
 	UnorderedSet<T>::~UnorderedSet() {}
+
+	template<typename T>
+	std::vector<T> UnorderedSet<T>::members()
+	{
+		std::vector<T> res;
+
+		for (int i = 0; i < this->bucketCount(); i++)
+		{
+			std::forward_list<T> temp = this->m_table[i];
+			for (auto iter = temp.begin(); iter != temp.end(); iter++)
+			{
+				res.push_back(*iter);
+			}
+		}
+
+		return res;
+	}
 
 	template<typename T>
 	UnorderedSet<T> UnorderedSet<T>::setUnion(const UnorderedSet& a, const UnorderedSet& b)

@@ -46,4 +46,52 @@ namespace tacl
         return temp;
     }
 
+    std::string getFilename(const std::string& input, std::string prefix)
+    {
+        return prefix + input;
+    }
+
+    std::string loadFile(const std::string& input)
+    {
+        std::string word;
+        std::ifstream file(input);
+        std::string dataVector;
+
+        if (!file.is_open()) // check that file is open
+            return dataVector;
+
+        while (std::getline(file, word, ' '))
+        {
+            dataVector += word;
+        }
+
+        file.close();      // close the file
+        return dataVector;
+    }
+
+    bool outputFile(const std::string& output, const std::vector<std::string> dataVector, int wordPerLine = 24)
+    {
+        std::ofstream file(output);
+        int i = 0;
+
+        if (!file.is_open())
+            return false;
+
+        for (auto head = dataVector.begin(); head != dataVector.end(); head++)
+        {
+            file << *head << " ";
+            i++;
+
+            if (i >= wordPerLine)
+            {
+                file << std::endl;
+                i = 0;
+            }
+        }
+
+        file.close();
+        return true;
+    }
+
+
 }

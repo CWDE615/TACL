@@ -1,4 +1,4 @@
-#pragma once
+
 /*
 MIT License
 Copyright (c) 2021 Christopher William Driggers-Ellis
@@ -21,9 +21,10 @@ SOFTWARE.
 This project was created by the members of Lucky13 for our final project in COP3530.
 To request a feature or report bugs, please use our gitHub page.
 */
-
+#pragma once
 #include <functional> // required for std::greater and std::less
 #include <exception>
+#include <sstream>
 #include "Library.hpp"
 
 namespace tacl
@@ -219,6 +220,20 @@ namespace tacl
 	unsigned int Heap<T>::size()
 	{
 		return m_count;
+	}
+
+	unsigned int getStringData(const std::string& value, std::vector<std::string>& dataVector)
+	{
+		std::istringstream iss(value);
+		unsigned int counter = 0;
+
+		std::string word;
+		while (getline(iss, word, ' '))
+		{
+			dataVector.push_back(word);
+		}
+
+		return counter;
 	}
 
 }

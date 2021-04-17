@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include "Library.hpp"
 #include "Map.hpp"
 #include "HashMap.hpp"
 #include <chrono>
@@ -24,10 +25,12 @@ namespace tacl {
 		void getPositions(const std::string& target, UnorderedSet<unsigned int>& positionSet, HashMap<std::string, UnorderedSet<unsigned int>>& map);
 		std::string setupDS(std::string& value, UnorderedSet<unsigned int>& positionSet, bool ordered);
 		void display(UnorderedSet<unsigned int>& positionSet, bool ordered, std::string word);
+		void replace(UnorderedSet<unsigned int>& positionSet, bool ordered, std::string word);
+		void extract(UnorderedSet<unsigned int>& positionSet, bool ordered);
 
 	public:
 
-		MapWrapper(std::string words, std::string filename); //constructor
+		MapWrapper(std::string& words, std::string filename); //constructor
 
 		bool searchMap(std::string value, bool ordered = true); //Search functionality
 
@@ -110,12 +113,48 @@ namespace tacl {
 				file << std::endl;
 			}
 		}
+
+		file.close();
 	}
 
-	// extract. Just don't print the word when passed
-	// replace. Replace it with another word instead of ignoring it
+	void MapWrapper::replace(UnorderedSet<unsigned int>& positionSet, bool ordered, std::string word)
+	{
+		std::vector<std::string>* stream = &m_dataVectorMap;
 
-	MapWrapper::MapWrapper(std::string words, std::string filename) : m_filename(filename)
+		if (ordered)
+			stream = &m_dataVectorHMap;
+
+		auto begin = stream->begin();
+		std::vector<unsigned int> pos = positionSet.members();
+
+		for (auto rm = pos.begin(); rm != pos.end(); rm++)
+		{
+			stream->erase(begin + *rm);
+			stream->insert(begin + *rm, word);
+		}
+
+		outputFile(m_filename, *stream);
+	}
+
+	inline void MapWrapper::extract(UnorderedSet<unsigned int>& positionSet, bool ordered)
+	{
+		std::vector<std::string>* stream = &m_dataVectorMap;
+
+		if (ordered)
+			stream = &m_dataVectorHMap;
+
+		auto begin = stream->begin();
+		std::vector<unsigned int> pos = positionSet.members();
+
+		for (auto rm = pos.begin(); rm != pos.end(); rm++)
+		{
+			stream->erase(begin + *rm);
+		}
+
+		outputFile(m_filename, *stream);
+	}
+
+	MapWrapper::MapWrapper(std::string& words, std::string filename) : m_filename(filename)
 	{
 		std::cout << std::endl;
 
@@ -151,7 +190,7 @@ namespace tacl {
 		UnorderedSet<unsigned int> positionSet;
 
 		std::string ds = setupDS(value, positionSet, ordered);
-		
+		display(positionSet, ordered, value);
 		
 		std::cout << "~~~ Search ~~~" << std::endl;
 		std::cout << std::endl;
@@ -175,15 +214,17 @@ namespace tacl {
 		UnorderedSet<unsigned int> positionSet;
 
 		std::string ds = setupDS(value, positionSet, ordered);
-		// TODO actual replacement
+		replace(positionSet, ordered, newValue);
 
 		std::cout << "Replaced " << replacedCount << " values of \"" << value << "\" in the " << ds << " with \"" << newValue << "\"." << std::endl;
 		std::cout << "~~~ Replace ~~~" << std::endl;
 		std::cout << std::endl;
 
+		
+
 		auto end = high_resolution_clock::now();
 		auto duration = duration_cast<microseconds>(end - start);
-		std::cout << " value replace run time in micro seconds: " << duration.count() << std::endl; //prints out how long it took the function to run
+		std::cout << ds << " value replace run time in micro seconds: " << duration.count() << std::endl; //prints out how long it took the function to run
 
 	}
 
@@ -199,6 +240,7 @@ namespace tacl {
 		UnorderedSet<unsigned int> positionSet;
 
 		std::string ds = setupDS(value, positionSet, ordered);
+		extract(positionSet, ordered);
 
 		// TODO	extraction
 
@@ -210,7 +252,4 @@ namespace tacl {
 		std::cout << "AVLMap value removal run time in micro seconds: " << duration.count() << std::endl; //prints out how long it took the function to run
 
 	}
-
-
-
 }

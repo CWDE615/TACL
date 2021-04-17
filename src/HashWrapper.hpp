@@ -17,7 +17,7 @@ namespace tacl
 
 
 	public:
-		HashWrapper(std::string words); //constructor
+		HashWrapper(std::string& words); //constructor
 
 		bool searchHashTable(std::string value); //Search functionality
 
@@ -27,7 +27,7 @@ namespace tacl
 
 	};
 
-	HashWrapper::HashWrapper(std::string words) 
+	HashWrapper::HashWrapper(std::string& words) 
 	{
 
 		using namespace std::chrono;
