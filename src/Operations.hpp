@@ -1,3 +1,4 @@
+#pragma once
 /*
 MIT License
 
@@ -25,8 +26,7 @@ This project was created by the members of Lucky13 for our final project in COP3
 To request a feature or report bugs, please use our gitHub page.
 */
 
-#pragma once
-#include "Library.hpp"
+#include "Library.hpp" // Library.hpp is responsible for handling the files and their contents
 #include "MapWrapper.hpp"
 #include "HeapWrapper.hpp"
 #include <fstream>

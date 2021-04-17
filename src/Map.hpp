@@ -1,3 +1,4 @@
+#pragma once
 /*
 MIT License
 
@@ -21,9 +22,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
+This project was created by the members of Lucky13 for our final project in COP3530.
+To request a feature or report bugs, please use our gitHub page.
 */
 
-#pragma once
 #include "UnorderedSet.hpp"
 #include <iostream>
 #include <exception>
@@ -33,7 +35,7 @@ SOFTWARE.
 
 namespace tacl
 {
-    /* code in the rest of this file is retooled from CW Ellis' submssion to Project 1. It has been edited to use templates instead of just ints and strings */
+    /* code in the rest of this file is retooled from CW Ellis' submission to Project 1. It has been edited to use templates instead of just ints and strings */
     // make an AVL based map
     template<typename K, typename V>
     class Map
