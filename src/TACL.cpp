@@ -51,8 +51,8 @@ int main(int argc, char* argv[])
 
 	menu.add_options("Arguments")
 		("w,word", "Word for search/extract/replace", cxxopts::value<std::string>())
+		("r,replacement", "Replacement for Word in replace functionality", cxxopts::value<std::string>())
 		("n,number", "Number of words in frequency list", cxxopts::value<unsigned int>())
-		("ascendging", "Sort Frequency List in Ascending Order", cxxopts::value<bool>()->default_value("false"))
 		;
 	
 	menu.help({ "File IO" , "Operations" });
@@ -75,7 +75,7 @@ int main(int argc, char* argv[])
 	// in an ops vector
 	const int OP_COUNT = 8;
 	std::vector<bool> arr(OP_COUNT, false);
-	std::vector<std::string> ops = { "word_frequency_heap", "word_frequency_vector", "search_avl", "extract_avl",
+	std::vector<std::string> ops = { "word_frequency_heap", "word_frequency_vector", "search_avl", "search_map", "extract_avl",
 	"extract_map","replace_avl","replace_map" };
 	std::unordered_map<int, std::string> op_map;
 	
@@ -97,28 +97,28 @@ int main(int argc, char* argv[])
 		switch (j)
 		{
 		case 0:
-			tacl::wordFrequencyHeap(input, output);
+			tacl::wordFrequency(input, output, 10, false);
 			break;
 		case 1:
-			tacl::wordFrequencyVector(input, output);
+			tacl::wordFrequency(input, output, 10, true);
 			break;
 		case 2:
-			tacl::searchAvl(input, output);
+			tacl::search(input, output, "this", true);
 			break;
 		case 3:
-			tacl::searchMap(input, output);
+			tacl::search(input, output, "this", false);
 			break;
 		case 4:
-			tacl::extractAvl(input, output);
+			tacl::extract(input, output, "this", true);
 			break;
 		case 5:
-			tacl::extractMap(input, output);
+			tacl::extract(input, output, "this", false);
 			break;
 		case 6:
-			tacl::replaceAvl(input, output);
+			tacl::replace(input, output, "this", "that", true);
 			break;
 		case 7:
-			tacl::replaceMap(input, output);
+			tacl::replace(input, output, "this", "that", false);
 			break;
 		default:
 			throw std::exception("Operation does not exist.");

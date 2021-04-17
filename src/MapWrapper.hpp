@@ -30,7 +30,7 @@ namespace tacl {
 
 	public:
 
-		MapWrapper(std::string& words, std::string filename); //constructor
+		MapWrapper(std::string& words, std::string filename, bool ordered); //constructor
 
 		bool searchMap(std::string value, bool ordered = true); //Search functionality
 
@@ -154,30 +154,33 @@ namespace tacl {
 		outputFile(m_filename, *stream);
 	}
 
-	MapWrapper::MapWrapper(std::string& words, std::string filename) : m_filename(filename)
+	MapWrapper::MapWrapper(std::string& words, std::string filename, bool ordered) : m_filename(filename)
 	{
 		std::cout << std::endl;
 
-		using namespace std::chrono;
-		auto start = high_resolution_clock::now(); //Times the function
+		if (ordered)
+		{
+			using namespace std::chrono;
+			auto start = high_resolution_clock::now(); //Times the function
 
-		getStringData(words, m_dataVectorMap, m_avlMap);
+			getStringData(words, m_dataVectorMap, m_avlMap);
 
-		auto end = high_resolution_clock::now();
-		auto duration = duration_cast<microseconds>(end - start);
-		std::cout << "AVLMap initialization run time in micro seconds: " << duration.count() << std::endl; //prints out how long it took the function to run
+			auto end = high_resolution_clock::now();
+			auto duration = duration_cast<microseconds>(end - start);
+			std::cout << "AVLMap initialization run time in micro seconds: " << duration.count() << std::endl; //prints out how long it took the function to run
+		}
+		else
+		{
+			using namespace std::chrono;
+			auto start2 = high_resolution_clock::now(); //Times the function
 
-		std::cout << std::endl;
+			getStringData(words, m_dataVectorHMap, m_hashMap);
 
-		using namespace std::chrono;
-		auto start2 = high_resolution_clock::now(); //Times the function
+			auto end2 = high_resolution_clock::now();
+			auto duration2 = duration_cast<microseconds>(end2 - start2);
+			std::cout << "HashMap initialization run time in micro seconds: " << duration2.count() << std::endl; //prints out how long it took the function to run
 
-		getStringData(words, m_dataVectorHMap, m_hashMap);
-
-		auto end2 = high_resolution_clock::now();
-		auto duration2 = duration_cast<microseconds>(end2 - start2);
-		std::cout << "HashMap initialization run time in micro seconds: " << duration2.count() << std::endl; //prints out how long it took the function to run
-
+		}
 	}
 
 	bool MapWrapper::searchMap(std::string value, bool ordered) 
@@ -220,8 +223,6 @@ namespace tacl {
 		std::cout << "~~~ Replace ~~~" << std::endl;
 		std::cout << std::endl;
 
-		
-
 		auto end = high_resolution_clock::now();
 		auto duration = duration_cast<microseconds>(end - start);
 		std::cout << ds << " value replace run time in micro seconds: " << duration.count() << std::endl; //prints out how long it took the function to run
@@ -241,8 +242,6 @@ namespace tacl {
 
 		std::string ds = setupDS(value, positionSet, ordered);
 		extract(positionSet, ordered);
-
-		// TODO	extraction
 
 		std::cout << "~~~ Extract ~~~" << std::endl;
 		std::cout << std::endl;

@@ -60,9 +60,9 @@ namespace tacl
         if (!file.is_open()) // check that file is open
             return dataVector;
 
-        while (std::getline(file, word, ' '))
+        while (std::getline(file, word))
         {
-            dataVector += word;
+            dataVector += (" " + word);
         }
 
         file.close();      // close the file

@@ -29,56 +29,73 @@ To request a feature or report bugs, please use our gitHub page.
 #include "Library.hpp"
 #include "MapWrapper.hpp"
 #include "HeapWrapper.hpp"
+#include <iostream>
 #include <fstream>
 #include <string>
 
 namespace tacl
 {
-	void wordFrequencyHeap(const std::string& input, const std::string& output)
+	void wordFrequency(const std::string& input, const std::string& output, unsigned int number, bool pq)
 	{
 		std::string fileIn(getFilename(input, "../input/"));
 		std::string fileOut(getFilename(output, "../output/"));
+
+		std::string temp = loadFile(fileIn);
+		tacl::HeapWrapper wrap(temp,fileOut,pq);
+
+		std::cout << "Finding the 10 most frequent words" << std::endl;
+		if (wrap.mostFrequentWords(number, pq))
+		{
+			std::cout << "Words found successfully. Check the file " << output << ".";
+		}
+		else
+		{
+			std::cout << "Error in finding the frequencies. Check inputs and filenames." << std::endl;
+		}
 	}
 
-	void wordFrequencyVector(const std::string& input, const std::string& output)
+	void search(const std::string& input, const std::string& output, std::string word, bool avl)
 	{
 		std::string fileIn(getFilename(input, "../input/"));
 		std::string fileOut(getFilename(output, "../output/"));
+
+		std::string temp = loadFile(fileIn);
+		tacl::MapWrapper wrap(temp, fileOut, avl);
+
+		std::cout << "Searching for instances of " << word << "in the file " << output << std::endl;
+		if (!wrap.searchMap(word, avl))
+		{
+			std::cout << "Error in searching for " << word << ". Check the file " << output << ".";
+		}
 	}
 
-	void searchAvl(const std::string& input, const std::string& output)
+	void extract(const std::string& input, const std::string& output, std::string word, bool avl)
 	{
 		std::string fileIn(getFilename(input, "../input/"));
 		std::string fileOut(getFilename(output, "../output/"));
+
+		std::string temp = loadFile(fileIn);
+		tacl::MapWrapper wrap(temp, fileOut, avl);
+
+		std::cout << "Extracting all instances of " << word << "in the file " << output << std::endl;
+		if (!wrap.extractMap(word, avl))
+		{
+			std::cout << "Error extracting " << word << ". Check the file " << output << ".";
+		}
 	}
 
-	void searchMap(const std::string& input, const std::string& output)
+	void replace(const std::string& input, const std::string& output, std::string curr, std::string rep, bool avl)
 	{
 		std::string fileIn(getFilename(input, "../input/"));
 		std::string fileOut(getFilename(output, "../output/"));
-	}
 
-	void extractAvl(const std::string& input, const std::string& output)
-	{
-		std::string fileIn(getFilename(input, "../input/"));
-		std::string fileOut(getFilename(output, "../output/"));
-	}
+		std::string temp = loadFile(fileIn);
+		tacl::MapWrapper wrap(temp, fileOut, avl);
 
-	void extractMap(const std::string& input, const std::string& output)
-	{
-		std::string fileIn(getFilename(input, "../input/"));
-		std::string fileOut(getFilename(output, "../output/"));
-	}
-
-	void replaceAvl(const std::string& input, const std::string& output)
-	{
-		std::string fileIn(getFilename(input, "../input/"));
-		std::string fileOut(getFilename(output, "../output/"));
-	}
-
-	void replaceMap(const std::string& input, const std::string& output)
-	{
-		std::string fileIn(getFilename(input, "../input/"));
-		std::string fileOut(getFilename(output, "../output/"));
+		std::cout << "Replacing all instances of " << curr << "in the file " << output << " with " << rep << std::endl;
+		if (!wrap.replaceMap(curr, rep, avl))
+		{
+			std::cout << "Error replacing " << curr << ". Check the file " << output << ".";
+		}
 	}
 }
