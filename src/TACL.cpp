@@ -97,7 +97,7 @@ int main(int argc, char* argv[])
 		if (parsed.count("w"))
 		    val = parsed["w"].as<std::string>();
 
-		if (parsed.count("r") + parsed.count("replace_avl") > 0 && (parsed.count("replacement") >= 1 || parsed.count("replacement") == 0))
+		if (parsed.count("r") + parsed.count("replace_avl") > 0 && (parsed.count("replacement") > 1 || parsed.count("replacement") == 0))
 			throw std::invalid_argument("One replacement must be specified for the original word in replacement operations.");
 
 		std::string rep;

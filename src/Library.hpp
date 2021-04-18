@@ -63,8 +63,7 @@ namespace tacl
 
         while (std::getline(file, word))
         {
-            if (word != "\n")
-                dataString += (" " + word);
+           dataString += (" " + word);
         }
 
         file.close();      // close the file
