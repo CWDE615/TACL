@@ -98,6 +98,8 @@ namespace tacl
 			val++;
 		}
 
+
+		return *(this->m_vMirror[hashVal].begin());
 	}
 
 	template<typename K, typename V>

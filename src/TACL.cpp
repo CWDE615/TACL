@@ -80,15 +80,12 @@ int main(int argc, char* argv[])
 		if (parsed.count("l") != 1 || parsed.count("o") > 1)
 			throw std::invalid_argument("One input file must given and at most one output file name may be given.");
 
-		std::cout << "here 4" << std::endl;
-
 		input = parsed["l"].as<std::string>();
 		output = parsed["o"].as<std::string>();
 
 		if (output.substr(output.size() - 4, 4) != ".txt" || input.substr(input.size() - 4, 4) != ".txt")
 			throw std::invalid_argument(".txt files only.");
 
-		std::cout << "here 3" << std::endl;
 		if (parsed.count("s") + parsed.count("search_avl") + parsed.count("e") + parsed.count("extract_avl") +
 			parsed.count("r") + parsed.count("replace_avl") > 0 && (parsed.count("w") > 1 || parsed.count("w") == 0))
 			throw std::invalid_argument("One word must be specified for this operation or these operations.");
@@ -104,7 +101,6 @@ int main(int argc, char* argv[])
 		if (parsed.count("replacement"))
 			rep = parsed["replacement"].as<std::string>();
 
-		std::cout << "here 2" << std::endl;
 		// set a bool for each of the operations to false
 		// in an ops vector
 		std::vector<std::string> ops = { "word_frequency_heap", "word_frequency_pq", "search_avl", "search_map", "extract_avl",
@@ -113,12 +109,9 @@ int main(int argc, char* argv[])
 		std::vector<bool> arr(OP_COUNT, false);
 		std::unordered_map<int, std::string> op_map;
 
-		std::cout << "here 1" << std::endl;
-
 		for (int h = 0; h < OP_COUNT; h++)
 			op_map[h] = ops[h];
 
-		std::cout << "here" << std::endl;
 		// sets the appropriate elements of the ops vector to true
 		// others remain false. This method allows the user to specify multiple operations
 		// at once.
@@ -179,8 +172,6 @@ int main(int argc, char* argv[])
 	{
 		std::cerr << e.what() << std::endl;
 	}
-	
-	std::cout << "All good fam" << std::endl;
 
 	return 0;
 }

@@ -87,7 +87,7 @@ namespace tacl
 
             if (i >= wordPerLine)
             {
-                file << std::endl;
+                file << std::endl << std::endl;
                 i = 0;
             }
         }

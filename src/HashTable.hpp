@@ -41,7 +41,7 @@ namespace tacl
 	{
 	protected:
 
-		const double m_MAX_FACTOR = 0.6;
+		const double m_MAX_FACTOR = 0.5;
 		std::forward_list<T>* m_table;
 		unsigned int m_count;
 		unsigned int m_tableSize;
@@ -230,6 +230,7 @@ namespace tacl
 			}
 		}
 
+		return *(m_table[hashVal].begin());
 	}
 
 	template<typename T>

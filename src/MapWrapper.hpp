@@ -89,13 +89,13 @@ namespace tacl {
 	    if (!ordered)
 			stream = &m_dataVectorHMap;
 
-		file << "Found " << positionSet.size() << " instances of " << word << " in the file " << m_filename << std::endl;
+		file << "Found " << positionSet.size() << " instances of " << word << " in the input file " << std::endl;
 
 		for (unsigned int i = 0; i < stream->size(); i++)
 		{
 			if (positionSet.find(i))
 			{
-				file << "Word found at position: " << i << std::endl;
+				file << "\nWord found at position: " << i << std::endl;
 
 				int begin = i - 11;
 				int end = i + 12;

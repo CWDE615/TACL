@@ -185,7 +185,7 @@ namespace tacl
         for (int i = 1; i <= words; i++)
         {
             WordFreqPair top = m_heap.top(); // avoid copying the top twice
-            file << "#" << i << "-" << top.m_word << " " << top.m_freq << std::endl;
+            file << "#" << i << "-" << top.m_word << "  " << top.m_freq << std::endl;
             m_heap.extract();
         }
 
