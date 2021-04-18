@@ -26,108 +26,76 @@ To request a feature or report bugs, please use our gitHub page.
 */
 
 #pragma once
-#include "Map.hpp" // Avl tree implementation
-#include "MapSet.hpp"  // map of sets for search
-#include "PriorityQueue.hpp" // priority queue implementations
+#include "Library.hpp"
+#include "MapWrapper.hpp"
+#include "HeapWrapper.hpp"
+#include <iostream>
 #include <fstream>
 #include <string>
 
 namespace tacl
 {
-	std::string getFilename(const std::string& input, std::string prefix)
+	void wordFrequency(const std::string& input, const std::string& output, unsigned int number, bool pq)
 	{
-		return prefix + input;
-	}
-	
-	std::vector<std::string>* loadFile(const std::string& input)
-	{
-		std::string word;
-		std::ifstream file(input);
-		std::vector<std::string>* dataVector = nullptr;
+		std::string fileIn(getFilename(input, "../input/"));
+		std::string fileOut(getFilename(output, "../output/"));
 
-		if (!file.is_open())
-			return dataVector;
+		std::string temp = loadFile(fileIn);
+		tacl::HeapWrapper wrap(temp,fileOut,pq);
 
-		dataVector = new std::vector<std::string>;
-
-		while (std::getline(file, word, ' ')) 
+		std::cout << "Finding the top " << number << " most frequent words in " << input << std::endl;
+		if (wrap.mostFrequentWords(number, pq))
 		{
-			dataVector->push_back(word);
+			std::cout << "Words found successfully. Check the file " << output << "." << std::endl;
 		}
-
-		file.close();      // close the file
-		return dataVector; // does not leak here. caller is responsible for deallocating the memory
-	}
-
-	bool outputFile(const std::string& output, const std::vector<std::string> dataVector, int wordPerLine = 24)
-	{
-		std::ofstream file(output);
-		int i = 0;
-
-		if (!file.is_open())
-			return false;
-
-		for (auto head = dataVector.begin(); head != dataVector.end(); head++)
+		else
 		{
-			file << *head << " ";
-			i++;
-
-			if (i > wordPerLine)
-			{
-				file << std::endl;
-				i = 0;
-			}
+			std::cout << "Error in finding the frequencies. Check inputs and filenames." << std::endl;
 		}
-
-		file.close();
-		return true;
 	}
 
-	void wordFrequencyHeap(const std::string& input, const std::string& output)
+	void search(const std::string& input, const std::string& output, std::string word, bool avl)
 	{
 		std::string fileIn(getFilename(input, "../input/"));
 		std::string fileOut(getFilename(output, "../output/"));
+
+		std::string temp = loadFile(fileIn);
+		tacl::MapWrapper wrap(temp, fileOut, avl);
+
+		std::cout << "Searching for instances of " << word << " in the file " << input << std::endl;
+		if (!wrap.searchMap(word, avl))
+		{
+			std::cout << "Error in searching for " << word << ". Check the file " << output << ".";
+		}
 	}
 
-	void wordFrequencyVector(const std::string& input, const std::string& output)
+	void extract(const std::string& input, const std::string& output, std::string word, bool avl)
 	{
 		std::string fileIn(getFilename(input, "../input/"));
 		std::string fileOut(getFilename(output, "../output/"));
+
+		std::string temp = loadFile(fileIn);
+		tacl::MapWrapper wrap(temp, fileOut, avl);
+
+		std::cout << "Extracting all instances of " << word << " in the file " << input << std::endl;
+		if (!wrap.extractMap(word, avl))
+		{
+			std::cout << "Error extracting " << word << ". Check the file " << output << ".";
+		}
 	}
 
-	void searchAvl(const std::string& input, const std::string& output)
+	void replace(const std::string& input, const std::string& output, std::string curr, std::string rep, bool avl)
 	{
 		std::string fileIn(getFilename(input, "../input/"));
 		std::string fileOut(getFilename(output, "../output/"));
-	}
 
-	void searchMap(const std::string& input, const std::string& output)
-	{
-		std::string fileIn(getFilename(input, "../input/"));
-		std::string fileOut(getFilename(output, "../output/"));
-	}
+		std::string temp = loadFile(fileIn);
+		tacl::MapWrapper wrap(temp, fileOut, avl);
 
-	void extractAvl(const std::string& input, const std::string& output)
-	{
-		std::string fileIn(getFilename(input, "../input/"));
-		std::string fileOut(getFilename(output, "../output/"));
-	}
-
-	void extractMap(const std::string& input, const std::string& output)
-	{
-		std::string fileIn(getFilename(input, "../input/"));
-		std::string fileOut(getFilename(output, "../output/"));
-	}
-
-	void replaceAvl(const std::string& input, const std::string& output)
-	{
-		std::string fileIn(getFilename(input, "../input/"));
-		std::string fileOut(getFilename(output, "../output/"));
-	}
-
-	void replaceMap(const std::string& input, const std::string& output)
-	{
-		std::string fileIn(getFilename(input, "../input/"));
-		std::string fileOut(getFilename(output, "../output/"));
+		std::cout << "Replacing all instances of " << curr << " in the file " << input << " with " << rep << std::endl;
+		if (!wrap.replaceMap(curr, rep, avl))
+		{
+			std::cout << "Error replacing " << curr << ". Check the file " << output << ".";
+		}
 	}
 }

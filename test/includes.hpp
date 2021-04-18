@@ -24,12 +24,12 @@ SOFTWARE.
 
 */
 
-#include "cxxopts.hpp" // implicitly includes several STL containers
-#include "Map.hpp" // Avl tree implementation
-#include "HashMap.hpp"
-#include "UnorderedSet.hpp"
-#include "Heap.hpp"  // map of sets for search
-#include "PriorityQueue.hpp" // priority queue implementations
-#include "HashTable.hpp" // hash table
-#include "Library.hpp"   // misc functions
-#include "Operations.hpp" // TACL file operations
+#include "../src/cxxopts.hpp" // implicitly includes several STL containers
+#include "../src/Map.hpp" // Avl tree implementation
+#include "../src/HashMap.hpp"
+#include "../src/UnorderedSet.hpp"
+#include "../src/Heap.hpp"  // map of sets for search
+#include "../src/PriorityQueue.hpp" // priority queue implementations
+#include "../src/HashTable.hpp" // hash table
+#include "../src/Library.hpp"   // misc functions
+#include "../src/Operations.hpp" // TACL file operations
