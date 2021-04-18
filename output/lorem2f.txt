@@ -1,0 +1,23 @@
+The top 20 most frequently used words in input file:
+#Rank-Word  Frequency
+#1-sit 1430
+#2-et 1350
+#3-in 1240
+#4-ac 1220
+#5-vel 1140
+#6-amet 1140
+#7- 1131
+#8-id 1090
+#9-ut 1050
+#10-nec 1050
+#11-non 1040
+#12-eu 1030
+#13-eget 1010
+#14-a 1000
+#15-vitae 970
+#16-quis 970
+#17-at 940
+#18-Sed 890
+#19-sed 830
+#20-tincidunt 740
+

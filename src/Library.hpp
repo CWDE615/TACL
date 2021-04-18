@@ -56,18 +56,19 @@ namespace tacl
     {
         std::string word;
         std::ifstream file(input);
-        std::string dataVector;
+        std::string dataString;
 
         if (!file.is_open()) // check that file is open
-            return dataVector;
+            return dataString;
 
         while (std::getline(file, word))
         {
-            dataVector += (" " + word);
+            if (word != "\n")
+                dataString += (" " + word);
         }
 
         file.close();      // close the file
-        return dataVector;
+        return dataString;
     }
 
     bool outputFile(const std::string& output, const std::vector<std::string> dataVector, int wordPerLine = 24)

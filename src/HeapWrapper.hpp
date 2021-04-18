@@ -115,7 +115,7 @@ namespace tacl
     {
         std::cout << std::endl;
 
-        if (pq)
+        if (!pq)
         {
             using namespace std::chrono;
             auto start = high_resolution_clock::now(); //Times the function
@@ -151,23 +151,18 @@ namespace tacl
     {
         std::cout << std::endl;
 
-        std::string curr;
-        if (pq)
-            curr = "Priority Queue";
-        else
-            curr = "Heap";
-
         using namespace std::chrono;
+        std::cout << "~~~ Word Frequency ~~~" << std::endl;
         auto start = high_resolution_clock::now(); //Times the function
-
         if (pq)
             mostFrequentWordsPQ(most);
         else
             mostFrequentWordsHeap(most);
 
         auto end = high_resolution_clock::now();
+        std::cout << "~~~ Word Frequency ~~~" << std::endl << std::endl;
         auto duration = duration_cast<microseconds>(end - start);
-        std::cout << curr << " initialization run time in micro seconds: " << duration.count() << std::endl; //prints out how long it took the function to run
+        std::cout << "Word finding time in micro seconds: " << duration.count() << std::endl; //prints out how long it took the function to run
        
         return true;
     }
@@ -183,9 +178,10 @@ namespace tacl
             return false;
         }
 
-        std::ofstream file(m_filename, std::ios_base::ate);
+        std::ofstream file(m_filename, std::ios_base::app);
 
-        file << "The top " << words << " frequently used words in " << m_filename << std::endl;
+        file << "The top " << words << " most frequently used words in input file:" << std::endl;
+        file << "#Rank-Word  Frequency" << std::endl;
         for (int i = 1; i <= words; i++)
         {
             WordFreqPair top = m_heap.top(); // avoid copying the top twice
@@ -210,13 +206,14 @@ namespace tacl
             return false;
         }
 
-        std::ofstream file(m_filename, std::ios_base::ate);
+        std::ofstream file(m_filename, std::ios_base::app);
 
-        file << "The top " << words << " frequently used words in " << m_filename << ":" << std::endl;
+        file << "The top " << words << " most frequently used words in " << m_filename << ":" << std::endl;
+        file << "#Rank-Word  Frequency" << std::endl;
         for (int i = 1; i <= words; i++)
         {
             WordFreqPair top = m_pq.top(); // avoid copying the top twice
-            file << "#" << i << "-" << top.m_word << " " << top.m_freq << std::endl;
+            file << "#" << i << "-" << top.m_word << "  " << top.m_freq << std::endl;
             m_pq.extract();
         }
 

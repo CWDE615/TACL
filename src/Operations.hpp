@@ -43,10 +43,10 @@ namespace tacl
 		std::string temp = loadFile(fileIn);
 		tacl::HeapWrapper wrap(temp,fileOut,pq);
 
-		std::cout << "Finding the 10 most frequent words" << std::endl;
+		std::cout << "Finding the top " << number << " most frequent words in " << input << std::endl;
 		if (wrap.mostFrequentWords(number, pq))
 		{
-			std::cout << "Words found successfully. Check the file " << output << ".";
+			std::cout << "Words found successfully. Check the file " << output << "." << std::endl;
 		}
 		else
 		{
@@ -62,7 +62,7 @@ namespace tacl
 		std::string temp = loadFile(fileIn);
 		tacl::MapWrapper wrap(temp, fileOut, avl);
 
-		std::cout << "Searching for instances of " << word << "in the file " << output << std::endl;
+		std::cout << "Searching for instances of " << word << " in the file " << input << std::endl;
 		if (!wrap.searchMap(word, avl))
 		{
 			std::cout << "Error in searching for " << word << ". Check the file " << output << ".";
@@ -77,7 +77,7 @@ namespace tacl
 		std::string temp = loadFile(fileIn);
 		tacl::MapWrapper wrap(temp, fileOut, avl);
 
-		std::cout << "Extracting all instances of " << word << "in the file " << output << std::endl;
+		std::cout << "Extracting all instances of " << word << " in the file " << input << std::endl;
 		if (!wrap.extractMap(word, avl))
 		{
 			std::cout << "Error extracting " << word << ". Check the file " << output << ".";
@@ -92,7 +92,7 @@ namespace tacl
 		std::string temp = loadFile(fileIn);
 		tacl::MapWrapper wrap(temp, fileOut, avl);
 
-		std::cout << "Replacing all instances of " << curr << "in the file " << output << " with " << rep << std::endl;
+		std::cout << "Replacing all instances of " << curr << " in the file " << input << " with " << rep << std::endl;
 		if (!wrap.replaceMap(curr, rep, avl))
 		{
 			std::cout << "Error replacing " << curr << ". Check the file " << output << ".";

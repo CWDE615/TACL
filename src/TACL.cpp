@@ -45,7 +45,7 @@ int main(int argc, char* argv[])
 		;
 	menu.add_options("Operations")
 	    ("f,word_frequency_heap","Operation set to Word Frequency through a Heap")
-	    ("word_frequency_vector","Operation set to Word Frequency through a Linear Priority Queue")
+	    ("word_frequency_pq","Operation set to Word Frequency through a Linear Priority Queue")
 	    ("search_avl","Operation set to Search with an AVL Tree")
 	    ("s,search_map","Operation set to Search with an Unordered Map of Sets")
 	    ("extract_avl", "Operation set to Extraction with an AVL Tree")
@@ -95,19 +95,19 @@ int main(int argc, char* argv[])
 		
 		std::string val;
 		if (parsed.count("w"))
-		    std::string val = parsed["w"].as<std::string>();
+		    val = parsed["w"].as<std::string>();
 
-		std::string rep;
 		if (parsed.count("r") + parsed.count("replace_avl") > 0 && (parsed.count("replacement") >= 1 || parsed.count("replacement") == 0))
 			throw std::invalid_argument("One replacement must be specified for the original word in replacement operations.");
-		
+
+		std::string rep;
 		if (parsed.count("replacement"))
-			std::string rep = parsed["replacement"].as<std::string>();
+			rep = parsed["replacement"].as<std::string>();
 
 		std::cout << "here 2" << std::endl;
 		// set a bool for each of the operations to false
 		// in an ops vector
-		std::vector<std::string> ops = { "word_frequency_heap", "word_frequency_vector", "search_avl", "search_map", "extract_avl",
+		std::vector<std::string> ops = { "word_frequency_heap", "word_frequency_pq", "search_avl", "search_map", "extract_avl",
 		"extract_map","replace_avl","replace_map" };
 		const int OP_COUNT = ops.size();
 		std::vector<bool> arr(OP_COUNT, false);

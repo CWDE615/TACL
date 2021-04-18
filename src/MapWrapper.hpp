@@ -45,7 +45,7 @@ namespace tacl {
 		try
 		{
 			positionSet = map.search(target);
-			std::cout << "Found " << positionSet.size() << " instances of \"" << target << "\" within the AVLMap!" << std::endl;
+			std::cout << "Found " << positionSet.size() << " instances of \"" << target << "\" within the AVL Map!" << std::endl;
 		}
 		catch (std::exception& e)
 		{
@@ -58,7 +58,7 @@ namespace tacl {
 		try
 		{
 			positionSet = map.search(target);
-			std::cout << "Found " << positionSet.size() << " instances of \"" << target << "\" within the AVLMap!" << std::endl;
+			std::cout << "Found " << positionSet.size() << " instances of \"" << target << "\" within the Hash Map!" << std::endl;
 		}
 		catch (std::exception& e)
 		{
@@ -74,19 +74,19 @@ namespace tacl {
 			getPositions(value, positionSet, m_hashMap);
 
 		if (ordered)
-			return "AVL map";
+			return "AVL Map";
 		else
-			return "Hash map";
+			return "Hash Map";
 
 	}
 
 	void tacl::MapWrapper::display(UnorderedSet<unsigned int>& positionSet, bool ordered, std::string word)
 	{
-		std::ofstream file(m_filename, std::ios_base::ate);
+		std::ofstream file(m_filename, std::ios_base::app);
 
 		std::vector<std::string>* stream = &m_dataVectorMap;
 		
-	    if (ordered)
+	    if (!ordered)
 			stream = &m_dataVectorHMap;
 
 		file << "Found " << positionSet.size() << " instances of " << word << " in the file " << m_filename << std::endl;
@@ -97,8 +97,8 @@ namespace tacl {
 			{
 				file << "Word found at position: " << i << std::endl;
 
-				int begin = i - 20;
-				int end = i + 20;
+				int begin = i - 11;
+				int end = i + 12;
 
 				if (begin < 0)
 					begin = 0;
@@ -107,7 +107,7 @@ namespace tacl {
 
 				for (unsigned int j = begin; j <= end; j++)
 				{
-					file << stream->at(i) << " ";
+					file << stream->at(j) << " ";
 				}
 
 				file << std::endl;
@@ -122,7 +122,7 @@ namespace tacl {
 	{
 		std::vector<std::string>* stream = &m_dataVectorMap;
 
-		if (ordered)
+		if (!ordered)
 			stream = &m_dataVectorHMap;
 
 		auto begin = stream->begin();
@@ -141,7 +141,7 @@ namespace tacl {
 	{
 		std::vector<std::string>* stream = &m_dataVectorMap;
 
-		if (ordered)
+		if (!ordered)
 			stream = &m_dataVectorHMap;
 
 		auto begin = stream->begin();
@@ -195,13 +195,13 @@ namespace tacl {
 
 		std::string ds = setupDS(value, positionSet, ordered);
 		display(positionSet, ordered, value);
-		
-		std::cout << "~~~ Search ~~~" << std::endl;
-		std::cout << std::endl;
 
 		auto end = high_resolution_clock::now();
 		auto duration = duration_cast<microseconds>(end - start);
-		std::cout << ds << " search run time in micro seconds: " << duration.count() << std::endl; //prints out how long it took the function to run
+
+		std::cout << "~~~ Search ~~~" << std::endl;
+		std::cout << std::endl;
+		std::cout << ds << " word search run time in micro seconds: " << duration.count() << std::endl; //prints out how long it took the function to run
 
 		return true;
 	}
@@ -221,13 +221,14 @@ namespace tacl {
 		std::string ds = setupDS(value, positionSet, ordered);
 		replace(positionSet, ordered, newValue);
 
+		auto end = high_resolution_clock::now();
+		auto duration = duration_cast<microseconds>(end - start);
+
 		std::cout << "Replaced " << replacedCount << " values of \"" << value << "\" in the " << ds << " with \"" << newValue << "\"." << std::endl;
 		std::cout << "~~~ Replace ~~~" << std::endl;
 		std::cout << std::endl;
 
-		auto end = high_resolution_clock::now();
-		auto duration = duration_cast<microseconds>(end - start);
-		std::cout << ds << " value replace run time in micro seconds: " << duration.count() << std::endl; //prints out how long it took the function to run
+		std::cout << ds << " value replacement run time in micro seconds: " << duration.count() << std::endl; //prints out how long it took the function to run
 
 		return true;
 	}
@@ -235,7 +236,7 @@ namespace tacl {
 	bool MapWrapper::extractMap(std::string value, bool ordered)
 	{
 
-		std::cout << std::endl;//ensures spacing between key function printing
+		std::cout << std::endl; //ensures spacing between key function printing
 		std::cout << "~~~ Extract ~~~" << std::endl;
 
 		using namespace std::chrono;
@@ -246,12 +247,12 @@ namespace tacl {
 		std::string ds = setupDS(value, positionSet, ordered);
 		extract(positionSet, ordered);
 
-		std::cout << "~~~ Extract ~~~" << std::endl;
-		std::cout << std::endl;
-
 		auto end = high_resolution_clock::now();
 		auto duration = duration_cast<microseconds>(end - start);
-		std::cout << "AVLMap value removal run time in micro seconds: " << duration.count() << std::endl; //prints out how long it took the function to run
+
+		std::cout << "~~~ Extract ~~~" << std::endl;
+		std::cout << std::endl;
+		std::cout << ds << " word extraction run time in micro seconds: " << duration.count() << std::endl; //prints out how long it took the function to run
 		
 		return true;
 	}
