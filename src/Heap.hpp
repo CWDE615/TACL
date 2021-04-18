@@ -231,6 +231,7 @@ namespace tacl
 		while (getline(iss, word, ' '))
 		{
 			dataVector.push_back(word);
+			counter++;
 		}
 
 		return counter;
