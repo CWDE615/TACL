@@ -160,6 +160,8 @@ namespace tacl
             mostFrequentWordsHeap(most);
 
         auto end = high_resolution_clock::now();
+
+        std::cout << "Top " << most << " words determined." << std::endl;
         std::cout << "~~~ Word Frequency ~~~" << std::endl << std::endl;
         auto duration = duration_cast<microseconds>(end - start);
         std::cout << "Word finding time in micro seconds: " << duration.count() << std::endl; //prints out how long it took the function to run

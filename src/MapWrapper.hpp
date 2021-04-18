@@ -215,7 +215,6 @@ namespace tacl {
 		using namespace std::chrono;
 		auto start = high_resolution_clock::now(); //Times the function
 
-		int replacedCount = 0;
 		UnorderedSet<unsigned int> positionSet;
 
 		std::string ds = setupDS(value, positionSet, ordered);
@@ -224,7 +223,7 @@ namespace tacl {
 		auto end = high_resolution_clock::now();
 		auto duration = duration_cast<microseconds>(end - start);
 
-		std::cout << "Replaced " << replacedCount << " values of \"" << value << "\" in the " << ds << " with \"" << newValue << "\"." << std::endl;
+		std::cout << "Replaced " << positionSet.size() << " instances of \"" << value << "\" in the " << ds << " with \"" << newValue << ".\"" << std::endl;
 		std::cout << "~~~ Replace ~~~" << std::endl;
 		std::cout << std::endl;
 
@@ -250,6 +249,7 @@ namespace tacl {
 		auto end = high_resolution_clock::now();
 		auto duration = duration_cast<microseconds>(end - start);
 
+		std::cout << "Extracted " << positionSet.size() << " instances values of \"" << value << ".\"" << std::endl;
 		std::cout << "~~~ Extract ~~~" << std::endl;
 		std::cout << std::endl;
 		std::cout << ds << " word extraction run time in micro seconds: " << duration.count() << std::endl; //prints out how long it took the function to run
