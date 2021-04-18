@@ -1,4 +1,5 @@
 #pragma once
+#include<fstream>
 
 namespace tacl
 {
@@ -71,7 +72,8 @@ namespace tacl
 
     bool outputFile(const std::string& output, const std::vector<std::string> dataVector, int wordPerLine = 24)
     {
-        std::ofstream file(output);
+        std::ofstream file(output, std::ios_base::ate);
+        
         int i = 0;
 
         if (!file.is_open())
@@ -88,6 +90,8 @@ namespace tacl
                 i = 0;
             }
         }
+
+        file << std::endl;
 
         file.close();
         return true;

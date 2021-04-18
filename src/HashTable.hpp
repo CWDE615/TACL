@@ -63,11 +63,11 @@ namespace tacl
 		HashTable& operator=(const HashTable<T>& rhs);
 		virtual ~HashTable();
 
-		unsigned int hash(T data);
-		virtual bool insert(T data);
-		virtual bool find(T data);
-		virtual T searchHash(T data);
-		virtual bool remove(T data);
+		unsigned int hash(const T& data);
+		virtual bool insert(const T& data);
+		virtual bool find(const T& data);
+		virtual T searchHash(const T& data);
+		virtual bool remove(const T& data);
 
 		unsigned int size();
 		unsigned int bucketCount();
@@ -153,7 +153,7 @@ namespace tacl
 	}
 
 	template<typename T>
-	unsigned int HashTable<T>::hash(T data)
+	unsigned int HashTable<T>::hash(const T& data)
 	{
 		std::hash<T> hasher;
 		return hasher(data) % m_tableSize;
@@ -182,7 +182,7 @@ namespace tacl
 
 	//Inserts new keys into the table
 	template<typename T>
-	bool HashTable<T>::insert(T data)
+	bool HashTable<T>::insert(const T& data)
 	{
 		if (!find(data)) // if the key does not exist within the Table, create one and push back the 
 		    m_table[hash(data)].emplace_front(data);
@@ -201,7 +201,7 @@ namespace tacl
 
 	// finds element in the hash table
 	template<typename T>
-	bool HashTable<T>::find(T data)
+	bool HashTable<T>::find(const T& data)
 	{
 		unsigned int hashVal = hash(data);
 		for (auto finder = m_table[hashVal].begin(); finder != m_table[hashVal].end(); finder++)
@@ -216,7 +216,7 @@ namespace tacl
 
 	// finds element in the has table and returns a copy
 	template<typename T>
-	T HashTable<T>::searchHash(T data)
+	T HashTable<T>::searchHash(const T& data)
 	{
 		if (!find(data))
 			throw std::exception();
@@ -229,10 +229,11 @@ namespace tacl
 				return *finder;
 			}
 		}
+
 	}
 
 	template<typename T>
-	inline bool HashTable<T>::remove(T data)
+	bool HashTable<T>::remove(const T& data)
 	{
 		if (!find(data))
 			return false;

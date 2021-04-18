@@ -82,7 +82,7 @@ namespace tacl {
 
 	void tacl::MapWrapper::display(UnorderedSet<unsigned int>& positionSet, bool ordered, std::string word)
 	{
-		std::ofstream file(m_filename);
+		std::ofstream file(m_filename, std::ios_base::ate);
 
 		std::vector<std::string>* stream = &m_dataVectorMap;
 		
@@ -114,6 +114,7 @@ namespace tacl {
 			}
 		}
 
+		file << std::endl;
 		file.close();
 	}
 
@@ -202,6 +203,7 @@ namespace tacl {
 		auto duration = duration_cast<microseconds>(end - start);
 		std::cout << ds << " search run time in micro seconds: " << duration.count() << std::endl; //prints out how long it took the function to run
 
+		return true;
 	}
 
 	bool MapWrapper::replaceMap(std::string value, std::string newValue, bool ordered) 
@@ -227,6 +229,7 @@ namespace tacl {
 		auto duration = duration_cast<microseconds>(end - start);
 		std::cout << ds << " value replace run time in micro seconds: " << duration.count() << std::endl; //prints out how long it took the function to run
 
+		return true;
 	}
 
 	bool MapWrapper::extractMap(std::string value, bool ordered)
@@ -249,6 +252,7 @@ namespace tacl {
 		auto end = high_resolution_clock::now();
 		auto duration = duration_cast<microseconds>(end - start);
 		std::cout << "AVLMap value removal run time in micro seconds: " << duration.count() << std::endl; //prints out how long it took the function to run
-
+		
+		return true;
 	}
 }

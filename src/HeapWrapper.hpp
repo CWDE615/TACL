@@ -168,51 +168,59 @@ namespace tacl
         auto end = high_resolution_clock::now();
         auto duration = duration_cast<microseconds>(end - start);
         std::cout << curr << " initialization run time in micro seconds: " << duration.count() << std::endl; //prints out how long it took the function to run
+       
+        return true;
     }
 
-    bool HeapWrapper::mostFrequentWordsHeap(int most)
+    bool HeapWrapper::mostFrequentWordsHeap(int words)
     {
-        if (most > m_heap.size())
+        if (words > m_heap.size())
         {
             return false;
         }
-        else if (most == 0)
+        else if (words == 0)
         {
             return false;
         }
 
-        std::ofstream file(m_filename);
+        std::ofstream file(m_filename, std::ios_base::ate);
 
-        file << "The top " << most << " frequently used words in " << m_filename << std::endl;
-        for (int i = 1; i <= most; i++)
+        file << "The top " << words << " frequently used words in " << m_filename << std::endl;
+        for (int i = 1; i <= words; i++)
         {
             WordFreqPair top = m_heap.top(); // avoid copying the top twice
             file << "#" << i << "-" << top.m_word << " " << top.m_freq << std::endl;
+            m_heap.extract();
         }
+
+        file << std::endl;
 
         file.close();
         return true;
     }
 
-    bool HeapWrapper::mostFrequentWordsPQ(int most)
+    bool HeapWrapper::mostFrequentWordsPQ(int words)
     {
-        if (most > m_pq.size())
+        if (words > m_pq.size())
         {
             return false;
         }
-        else if (most == 0)
+        else if (words == 0)
         {
             return false;
         }
 
-        std::ofstream file(m_filename);
+        std::ofstream file(m_filename, std::ios_base::ate);
 
-        file << "The top " << most << " frequently used words in " << m_filename << ":" << std::endl;
-        for (int i = 1; i <= most; i++)
+        file << "The top " << words << " frequently used words in " << m_filename << ":" << std::endl;
+        for (int i = 1; i <= words; i++)
         {
             WordFreqPair top = m_pq.top(); // avoid copying the top twice
             file << "#" << i << "-" << top.m_word << " " << top.m_freq << std::endl;
+            m_pq.extract();
         }
+
+        file << std::endl;
 
         file.close();
         return true;

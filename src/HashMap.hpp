@@ -16,9 +16,9 @@ namespace tacl
 		HashMap();
 		~HashMap();
 		
-		bool insert(K data, V value);
-		V& search(K data);
-		bool remove(K data);
+		bool insert(const K& data, const V& value);
+		V& search(const K& data);
+		bool remove(const K& data);
 
 		unsigned int size();
 		unsigned int bucketCount();
@@ -60,7 +60,7 @@ namespace tacl
 	}
 
 	template<typename K, typename V>
-	bool HashMap<K, V>::insert(K key, V value)
+	bool HashMap<K, V>::insert(const K& key, const V& value)
 	{
 		if (HashTable<K>::find(key))
 			return false;
@@ -80,7 +80,7 @@ namespace tacl
 	}
 
 	template<typename K, typename V>
-	V& HashMap<K, V>::search(K key)
+	V& HashMap<K, V>::search(const K& key)
 	{
 		if (!HashTable<K>::find(key))
 			throw std::exception();
@@ -101,7 +101,7 @@ namespace tacl
 	}
 
 	template<typename K, typename V>
-	bool HashMap<K, V>::remove(K key)
+	bool HashMap<K, V>::remove(const K& key)
 	{
 		int hashVal = this->hash(key);
 		bool exists = false;
