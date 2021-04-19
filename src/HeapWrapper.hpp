@@ -249,7 +249,7 @@ namespace tacl
 
         std::ofstream file(m_filename, std::ios_base::app);
 
-        file << "The top " << words << " most frequently used words in " << m_filename << ":" << std::endl;
+        file << "The top " << words << " most frequently used words in the input file:" << std::endl;
         file << "#Rank-Word  Frequency" << std::endl;
         for (int i = 1; i <= words; i++)
         {
