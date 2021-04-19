@@ -26,8 +26,8 @@ SOFTWARE.
 
 #include "cxxopts.hpp" // implicitly includes several STL containers
 #include "Map.hpp" // Avl tree implementation
-#include "HashMap.hpp"
-#include "UnorderedSet.hpp"
+#include "HashMap.hpp" // combines hashTable and unordered set to store data with key value pairs
+#include "UnorderedSet.hpp" // includes some standard set manipulation functions
 #include "Heap.hpp"  // map of sets for search
 #include "PriorityQueue.hpp" // priority queue implementations
 #include "HashTable.hpp" // hash table

@@ -1,4 +1,4 @@
-
+#pragma once
 /*
 MIT License
 Copyright (c) 2021 Christopher William Driggers-Ellis
@@ -21,11 +21,11 @@ SOFTWARE.
 This project was created by the members of Lucky13 for our final project in COP3530.
 To request a feature or report bugs, please use our gitHub page.
 */
-#pragma once
+
 #include <functional> // required for std::greater and std::less
 #include <exception>
 #include <sstream>
-#include "Library.hpp"
+#include "Library.hpp" // Library.hpp is responsible for handling the files and their contents
 
 namespace tacl
 {
@@ -38,14 +38,14 @@ namespace tacl
 		unsigned int m_count;
 		T* m_heap;
 
-		// Private Funcitons
+		// Private Functions
 		void heapifyUp(int index);
 		void heapifyDown(int index);
 		void increaseSize();
 		void copy(const Heap& rhs);
 
 	public:
-		// Public Funcitons
+		// Public Functions
 		Heap(bool max = true);
 		Heap(const Heap& rhs);
 		Heap& operator=(const Heap& rhs);
@@ -58,21 +58,23 @@ namespace tacl
 
 	};
 
-
+	// constructor: initial size set to a multiple of 2 with the idea that it will be expanded
 	template<typename T>
 	Heap<T>::Heap(bool max) : m_MAX(max)
 	{
-		m_size = 16;
+		m_size = 16; 
 		m_count = 0;
 		m_heap = new T[m_size];
 	}
 
+	// copy constructor
 	template<typename T>
 	Heap<T>::Heap(const Heap<T>& rhs) : m_MAX(rhs.m_MAX)
 	{
 		copy(rhs);
 	}
 
+	// copy assignment operator
 	template<typename T>
 	Heap<T>& Heap<T>::operator=(const Heap<T>& rhs)
 	{
@@ -82,6 +84,7 @@ namespace tacl
 		return *this;
 	}
 
+	// destructor
 	template<typename T>
 	Heap<T>::~Heap()
 	{
@@ -89,33 +92,34 @@ namespace tacl
 		m_heap = nullptr;
 	}
 
+	// used when a new element is added to the heap
 	template<typename T>
 	void Heap<T>::heapifyUp(int index)
 	{
 		while (index != 0)
 		{
 			bool up = false;
-			if (m_MAX)
+			if (m_MAX) // compare the current element to its parent
 			{
-			    up = (m_heap[index] > m_heap[(index - 1) / 2]);
+			    up = (m_heap[index] > m_heap[(index - 1) / 2]); 
 			}
 			else
 			{
 				up = (m_heap[index] < m_heap[(index - 1) / 2]);
 			}
 
-			if (up)
+			if (up) // perform the swap 
 			{
 				T temp = m_heap[index];
 				m_heap[index] = m_heap[(index - 1) / 2];
 				m_heap[(index - 1) / 2] = temp;
 			}
-			else
+			else // heapify up complete
 			{
 				break;
 			}
 
-			index = (index-1)/2;
+			index = (index-1)/2; // continue up the heap
 		}
 	}
 
@@ -127,7 +131,7 @@ namespace tacl
 			return;
 
 		int next;
-		if (2 * index + 2 >= m_count) // check whether the current elemnt has a right child in the heap
+		if (2 * index + 2 >= m_count) // check whether the current element has a right child in the heap
 		{
 			next = 2 * index + 1;    // if the right child is not in the heap, then the left is
 		}                            // if neither were, it would be caught above
@@ -167,16 +171,18 @@ namespace tacl
 
 	}
 
+	// increases the size of the heap using the copy constructor
 	template<typename T>
 	void Heap<T>::increaseSize()
 	{
-		T* temp = tacl::copy(m_heap, m_size, m_size * 2);
+		T* temp = tacl::copy(m_heap, m_size, m_size * 2); // new heap will be twice the size
 
 		m_size *= 2;
-		delete[] m_heap;
+		delete[] m_heap; // delete the old heap
 		m_heap = temp;
 	}
 
+	// calls the copy constructor to copy the passed in heap to "this" heap
 	template<typename T>
 	void Heap<T>::copy(const Heap& rhs)
 	{
@@ -185,6 +191,7 @@ namespace tacl
 		m_size = rhs.m_size;
 	}
 
+	// inserts a new item into the heap and calls heapify up
 	template<typename T>
 	void Heap<T>::insert(T& data)
 	{
@@ -193,35 +200,40 @@ namespace tacl
 		m_count++;
 
 		if (m_count == m_size)
-			increaseSize();
+			increaseSize(); // increases the size of the heap when necessary
 	}
 
+	// gets the topmost element in the heap if there is one
 	template<typename T>
 	T Heap<T>::top()
 	{
 		if (m_count == 0)
-			throw std::exception();
+			throw std::exception(); // throws an exception if there is nothing in the heap
 		else
 			return m_heap[0];
 	}
 
+	// extracts the topmost element in the heap if there is one
 	template<typename T>
 	bool Heap<T>::extract()
 	{
 		if (m_count == 0)
-			return false;
+			return false; // tells that there was no data in the heap
 
 		m_heap[0] = m_heap[--m_count];
-		heapifyDown(0);
-		return true;
+		heapifyDown(0); // reorganizes the heap once the item has been removed
+		return true; // returns true if the element was successfully removed
 	}
 
+	// gets the current size of the heap
 	template<typename T>
 	unsigned int Heap<T>::size()
 	{
 		return m_count;
 	}
 
+	// takes a passed in string and places each word into the passed in data vector
+	// returns the number of words in the passed in string
 	unsigned int getStringData(const std::string& value, std::vector<std::string>& dataVector)
 	{
 		std::istringstream iss(value);

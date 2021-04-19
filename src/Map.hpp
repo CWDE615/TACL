@@ -1,3 +1,4 @@
+#pragma once
 /*
 MIT License
 
@@ -23,8 +24,7 @@ SOFTWARE.
 
 */
 
-#pragma once
-#include "UnorderedSet.hpp"
+#include "UnorderedSet.hpp" // UnorderedSet.hpp is responsible for organizing occurrences of the data in Map
 #include <iostream>
 #include <exception>
 #include <string>
@@ -33,7 +33,7 @@ SOFTWARE.
 
 namespace tacl
 {
-    /* code in the rest of this file is retooled from CW Ellis' submssion to Project 1. It has been edited to use templates instead of just ints and strings */
+    /* code in the rest of this file is retooled from CW Ellis' submission to Project 1. It has been edited to use templates instead of just ints and strings */
     // make an AVL based map
     template<typename K, typename V>
     class Map
@@ -107,7 +107,7 @@ namespace tacl
     // is O(1) in any case, as the worst case is O(1), and the other two cases, such as the best where the root is null, are just constant
     // time improvement 
     template<typename K, typename V>
-    typename Map<K, V>::Node* Map<K, V>::checkRotation(Node* root) // sus
+    typename Map<K, V>::Node* Map<K, V>::checkRotation(Node* root)
     {
         if (root != nullptr)
         {
@@ -152,7 +152,7 @@ namespace tacl
 
     // all rotation functions adapted from my solution to Stepik 5.1.1.
     // These rotation algorithms were informed by information given
-    // in the resrouces for that assignment. These clearly run in O(1) in any case,
+    // in the resources for that assignment. These clearly run in O(1) in any case,
     // for the rotation occurs in a clearly constant time, and the only other operations
     // are calling four other constant time functions
     template<typename K, typename V>
@@ -160,7 +160,7 @@ namespace tacl
     {
         Node* top = root;     // set a temp pointer to the roots location
         root = root->m_right; // the root is then set to its right child
-        Node* temp = root->m_left; // another temp is set to the the new root's left
+        Node* temp = root->m_left; // another temp is set to the new root's left
         top->m_right = temp;  // the top's right becomes the new temp node
         root->m_left = top;   // with a link established for the root's left child becomes the top
 
@@ -175,6 +175,8 @@ namespace tacl
         return root; // returns the root, which is now the top of the balanced structure
     }
 
+    // performs a right rotation on the passed in node
+    // again operates in O(1) time
     template<typename K, typename V>
     typename Map<K, V>::Node* Map<K, V>::rightRotation(Node* root) // works like left rotation but mirrored
     {
@@ -241,7 +243,7 @@ namespace tacl
 
     // balances the height of nodes down the path of the inorder successor
     // since it only goes through the left children of the root and calls 2 O(1) functions, it is O(h) where h is the height of the given subtree
-    // with root root, instead of linear with the number of nodes in that tree in any case. h ~ O(log(n)) for the number of nodes n, so we can expect
+    // with root, instead of linear with the number of nodes in that tree in any case. h ~ O(log(n)) for the number of nodes n, so we can expect
     // that the function is O(log(n)).
     template<typename K, typename V>
     void Map<K, V>::removeBalHeightFixer(Node* root)
@@ -254,6 +256,7 @@ namespace tacl
         }
     }
 
+    // recursive copy tree function
     template<typename K, typename V>
     typename Map<K, V>::Node* Map<K, V>::copyTree(Node* rhsRoot)
     {
@@ -302,12 +305,14 @@ namespace tacl
         m_root = nullptr; // set m_root to null following the tree's deletion
     }
 
+    // copy constructor
     template<typename K, typename V>
     Map<K, V>::Map(const Map& rhs)
     {
         m_root = copyTree(rhs.m_root);
     }
 
+    // copy assignment operator
     template<typename K, typename V>
     Map<K, V>& Map<K, V>::operator=(const Map<K, V>& rhs)
     {
@@ -437,16 +442,16 @@ namespace tacl
 
     }
 
-    // helper for the recursive removal function. Runs in variable time, dependant on whether the root node pointer is pointing to a leaf, a node with a single
+    // helper for the recursive removal function. Runs in variable time, dependent on whether the root node pointer is pointing to a leaf, a node with a single
     // child or a node with two children. In the first and second cases, the function will run in constant time, for the calculations for finding the children are constant and
     // so are the operations of switching and deleting the pointers. Thus the best case is definitely O(1), whereas the worst can be defined as any case falling under the two children
-    // category. In this case, the complexity is found by analyizing the fact that O(log(r)), where r is the number of nodes in the root's right subtree,
+    // category. In this case, the complexity is found by analyzing the fact that O(log(r)), where r is the number of nodes in the root's right subtree,
     // operations are required to find the root's inoreder successor, the fact that the functions calcHeight and calcBal are O(1) and that the function removeBalHeightFixer is O(log(r)) in any case itself.
     // This means that the whole operation would be bounded by log(r) and thus O(log(r)) represents a worst case complexity for the remover function.
     template<typename K, typename V>
     typename Map<K, V>::Node* Map<K, V>::remover(Node* root)
     {
-        if (root->m_left != nullptr && root->m_right != nullptr) // if the node has two chldren
+        if (root->m_left != nullptr && root->m_right != nullptr) // if the node has two children
         {
             // go to the right subtree and follow the m_left pointers of the children to find the inorder successor
             Node* successor = root->m_right;
@@ -559,7 +564,7 @@ namespace tacl
         calcBal();
     }
 
-    // getHeight appeared as a recursvie function in my solution to Stepik exercise 5.2.1. This, however, uses the m_height's of child nodes
+    // getHeight appeared as a recursive function in my solution to Stepik exercise 5.2.1. This, however, uses the m_height's of child nodes
     // to accomplish the same task in constant time, also with an algorithm infromed by slide 18 of the Trees-1 slides
     template<typename K, typename V>
     int Map<K, V>::Node::getHeight(Node* node)

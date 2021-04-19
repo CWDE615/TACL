@@ -1,16 +1,41 @@
 #pragma once
+/*
+MIT License
+
+Copyright (c) 2021 Christopher William Driggers-Ellis
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+*/
+
 #include <string>
 #include <iostream>
 #include <fstream>
 #include <unordered_map>
 #include <chrono>
-#include "Heap.hpp"
-#include "PriorityQueue.hpp"
+#include "Heap.hpp" // Heap.hpp contains the functionality of the heap data structure
+#include "PriorityQueue.hpp" // PriorityQueue.hpp contains the functionality of the priority queue data structure
 
 namespace tacl
 {
-    // scheme of using a word-frequncy pair is heavily inspired by Chrstiopher's submission to Project 2. 
-// However, no code was directly copied.
+    // scheme of using a word-frequency pair is heavily inspired by Christopher's submission to Project 2. 
+    // However, no code was directly copied.
     struct WordFreqPair
     {
         std::string m_word;
@@ -19,25 +44,30 @@ namespace tacl
         WordFreqPair();
         WordFreqPair(const std::string& word, const unsigned int freq);
     };
-
+    
+    // constructors
     WordFreqPair::WordFreqPair() : m_word(""), m_freq(0) {}
     WordFreqPair::WordFreqPair(const std::string& word, const unsigned int freq) : m_word(word), m_freq(freq) {}
 
+    // greater than operator
     bool operator>(const WordFreqPair& a, const WordFreqPair& b)
     {
         return a.m_freq > b.m_freq;
     }
 
+    // less than operator
     bool operator<(const WordFreqPair& a, const WordFreqPair& b)
     {
         return a.m_freq < b.m_freq;
     }
 
+    // greater than or equal to operator
     bool operator>=(const WordFreqPair& a, const WordFreqPair& b)
     {
         return a.m_freq >= b.m_freq;
     }
 
+    // less than or equal to operator
     bool operator<=(const WordFreqPair& a, const WordFreqPair& b)
     {
         return a.m_freq <= b.m_freq;
@@ -102,6 +132,7 @@ namespace tacl
         }
     }
 
+    // creates a priority queue of each letter in the letter map
     void HeapWrapper::generateFreqPQ(const std::unordered_map<std::string, unsigned int>& letter_map)
     {
         for (auto iter = letter_map.begin(); iter != letter_map.end(); iter++)
@@ -111,6 +142,8 @@ namespace tacl
         }
     }
 
+    // constructor to test the functionality of the heap/priority queue data structures
+    // times the functionality of either
     HeapWrapper::HeapWrapper(std::string& words, std::string filename, bool pq) : m_filename(filename)
     {
         std::cout << std::endl;
@@ -140,13 +173,15 @@ namespace tacl
             std::cout << "Priority Queue initialization run time in micro seconds: " << duration2.count() << std::endl; //prints out how long it took the function to run
         }
 
-
     }
 
+    // destructor
     HeapWrapper::~HeapWrapper()
     {
     }
 
+    // displays the most frequent words of the passed in string file using either the heap or priority queue
+    // also shows the time taken for execution
     inline bool HeapWrapper::mostFrequentWords(int most, bool pq)
     {
         std::cout << std::endl;
@@ -166,9 +201,11 @@ namespace tacl
         auto duration = duration_cast<microseconds>(end - start);
         std::cout << "Word finding time in micro seconds: " << duration.count() << std::endl; //prints out how long it took the function to run
        
-        return true;
+        return true; // returns true if the function was successful
     }
 
+    // helper function that finds the most frequent words in the heap
+    // returns true if the function was successful
     bool HeapWrapper::mostFrequentWordsHeap(int words)
     {
         if (words > m_heap.size())
@@ -197,6 +234,8 @@ namespace tacl
         return true;
     }
 
+    // helper function that finds the most frequent words in the priority queue
+    // returns true if the function was successful
     bool HeapWrapper::mostFrequentWordsPQ(int words)
     {
         if (words > m_pq.size())
@@ -221,7 +260,7 @@ namespace tacl
 
         file << std::endl;
 
-        file.close();
+        file.close(); // close the file when finished
         return true;
     }
 }

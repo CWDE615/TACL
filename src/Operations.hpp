@@ -1,3 +1,4 @@
+#pragma once
 /*
 MIT License
 
@@ -25,16 +26,17 @@ This project was created by the members of Lucky13 for our final project in COP3
 To request a feature or report bugs, please use our gitHub page.
 */
 
-#pragma once
-#include "Library.hpp"
-#include "MapWrapper.hpp"
-#include "HeapWrapper.hpp"
+#include "Library.hpp" // Library.hpp is responsible for handling the files and their contents
+#include "MapWrapper.hpp" // MapWrapper.hpp is responsible for creating and analyzing the hashmap/map functionality
+#include "HeapWrapper.hpp" // HeapWraper.hpp is responsible for creating and analyzing the heap functionality
 #include <iostream>
 #include <fstream>
 #include <string>
 
 namespace tacl
 {
+	// loads the file and identifies the most frequent words in the heap data structure
+	// displays the output file once completed
 	void wordFrequency(const std::string& input, const std::string& output, unsigned int number, bool pq)
 	{
 		std::string fileIn(getFilename(input, "../input/"));
@@ -54,6 +56,8 @@ namespace tacl
 		}
 	}
 
+	// loads the file and performs the search functionality in the hashmap/map data structures
+	// displays the output file once completed
 	void search(const std::string& input, const std::string& output, std::string word, bool avl)
 	{
 		std::string fileIn(getFilename(input, "../input/"));
@@ -69,6 +73,8 @@ namespace tacl
 		}
 	}
 
+	// loads the file and performs the extraction functionality in the hashmap/map data structures
+	// displays the output file once completed
 	void extract(const std::string& input, const std::string& output, std::string word, bool avl)
 	{
 		std::string fileIn(getFilename(input, "../input/"));
@@ -84,6 +90,8 @@ namespace tacl
 		}
 	}
 
+	// loads the file and performs the replacement functionality in the hashmap/map data structures
+	// displays the output file once completed
 	void replace(const std::string& input, const std::string& output, std::string curr, std::string rep, bool avl)
 	{
 		std::string fileIn(getFilename(input, "../input/"));
