@@ -73,7 +73,7 @@ namespace tacl
 
     bool outputFile(const std::string& output, const std::vector<std::string> dataVector, int wordPerLine = 24)
     {
-        std::ofstream file(output, std::ios_base::ate);
+        std::ofstream file(output, std::ios_base::app);
         
         int i = 0;
 
