@@ -119,7 +119,7 @@ namespace tacl
 		}
 	}
 
-	/* Heapify down algorithm derived from Christopher's submission to Stepik exercise 6.1.1 */
+	/* Heapify down algorithm derived from Christopher's submission to Stepik exercise 6.1.1 and similar to Quiz 6 submission as they do the same task */
 	template<typename T>
 	void Heap<T>::heapifyDown(int index)
 	{

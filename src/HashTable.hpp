@@ -32,7 +32,7 @@ SOFTWARE.
 #include <vector>
 #include "Library.hpp"
 
-/* Hash Table implementation derived from Christopher William Driggers-Ellis' submission to Stepik 10.2.1
+/* Hash Table implementation derived from Christopher William Driggers-Ellis' submission to Stepik 10.1.1
    and retooled by both Corey and Christopher. */
 namespace tacl
 {
@@ -247,6 +247,12 @@ namespace tacl
 			if (*finder == data)
 			{
 				m_count--;
+				// Citation carried over from 10.1.1:
+				// I discovered that forward_list in STL allows you to remove an element matching a value
+		        // through remove on cppreference.com while checking my syntax for a previous iteration of rem().
+		        // This allows us to simplify the task of removing the item from the list by just using the remove()
+		        // function on the appropriate list in the array. 
+		        // Since the integers inserted are distinct, there is no need to worry about duplicates.
 				m_table[hashVal].remove(data);
                 exists = true;
 				break;
