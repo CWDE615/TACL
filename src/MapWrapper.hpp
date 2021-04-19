@@ -1,10 +1,37 @@
 #pragma once
+/*
+MIT License
+
+Copyright (c) 2021 Christopher William Driggers-Ellis
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+This project was created by the members of Lucky13 for our final project in COP3530.
+To request a feature or report bugs, please use our gitHub page.
+*/
+
 #include <iostream>
 #include <string>
 #include <vector>
-#include "Library.hpp"
-#include "Map.hpp"
-#include "HashMap.hpp"
+#include "Library.hpp" // Library.hpp is responsible for handling the files and their contents
+#include "Map.hpp" // Map.hpp contains the functionality of the Map data structure 
+#include "HashMap.hpp" // HashMap.hpp contains the functionality for the HashMap data structure
 #include <chrono>
 #include <fstream>
 
@@ -40,6 +67,7 @@ namespace tacl {
 
 	};
 
+	// gets the position of the passed in target string and displays the number of occurrences within the ALV map data structure
 	void tacl::MapWrapper::getPositions(const std::string& target, UnorderedSet<unsigned int>& positionSet, Map<std::string, UnorderedSet<unsigned int>>& map)
 	{
 		try
@@ -53,6 +81,7 @@ namespace tacl {
 		}
 	}
 
+	// gets the position of the passed in target string and displays the number of occurrences within the Hashmap data structure
 	void tacl::MapWrapper::getPositions(const std::string& target, UnorderedSet<unsigned int>& positionSet, HashMap<std::string, UnorderedSet<unsigned int>>& map)
 	{
 		try
@@ -66,6 +95,7 @@ namespace tacl {
 		}
 	}
 
+	// sets up the display for either the Hashmap or the AVL map
 	std::string tacl::MapWrapper::setupDS(std::string& value, UnorderedSet<unsigned int>& positionSet, bool ordered)
 	{
 		if (ordered)
@@ -80,6 +110,7 @@ namespace tacl {
 
 	}
 
+	// displays the number of occurrences of the passed in word if available and their positions within the provided string file 
 	void tacl::MapWrapper::display(UnorderedSet<unsigned int>& positionSet, bool ordered, std::string word)
 	{
 		std::ofstream file(m_filename, std::ios_base::app);
@@ -118,6 +149,7 @@ namespace tacl {
 		file.close();
 	}
 
+	// replaces a word within the provided string file and outputs the changed string file
 	void MapWrapper::replace(UnorderedSet<unsigned int>& positionSet, bool ordered, std::string word)
 	{
 		std::vector<std::string>* stream = &m_dataVectorMap;
@@ -155,6 +187,8 @@ namespace tacl {
 		outputFile(m_filename, *stream);
 	}
 
+	// constructor for creating an analyzing the hashmap/map data structures with the passed in file
+	// provides the time for completing each action
 	MapWrapper::MapWrapper(std::string& words, std::string filename, bool ordered) : m_filename(filename)
 	{
 		std::cout << std::endl;
@@ -184,6 +218,9 @@ namespace tacl {
 		}
 	}
 
+	// analyzing the search freature functionality of the hashmap/map data structures with the passed in file
+	// provides the time for completing each action
+	// returns true if successful
 	bool MapWrapper::searchMap(std::string value, bool ordered) 
 	{
 		std::cout << std::endl; //ensures spacing between key function printing
@@ -205,7 +242,10 @@ namespace tacl {
 
 		return true;
 	}
-
+	
+	// analyzing the replacement feature functionality of the hashmap/map data structures with the passed in file
+	// provides the time for completing each action
+	// returns true if successful
 	bool MapWrapper::replaceMap(std::string value, std::string newValue, bool ordered) 
 	{
 
@@ -232,6 +272,9 @@ namespace tacl {
 		return true;
 	}
 
+	// analyzing the extraction feature functionality of the hashmap/map data structures with the passed in file
+	// provides the time for completing each action
+	// returns true if successful
 	bool MapWrapper::extractMap(std::string value, bool ordered)
 	{
 

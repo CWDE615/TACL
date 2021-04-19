@@ -1,6 +1,31 @@
 #pragma once
-#include "HashTable.hpp"
-#include "UnorderedSet.hpp"
+/*
+MIT License
+
+Copyright (c) 2021 Christopher William Driggers-Ellis
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+*/
+
+#include "HashTable.hpp" // HashTable.hpp is responsible for creating and storing different occurrences of input data
+#include "UnorderedSet.hpp" // UnorderedSet.hpp is responsible for organizing occurrences of the data in HashTable
 #include <exception>
 #include <sstream>
 
@@ -24,6 +49,7 @@ namespace tacl
 		unsigned int bucketCount();
 	};
 
+	// increases the size of the hashmap 
 	template<typename K, typename V>
 	void HashMap<K, V>::rehash()
 	{
@@ -39,69 +65,75 @@ namespace tacl
 			auto val = tempMir[i].begin();
 			for (auto iter = tempArr[i].begin(); iter != tempArr[i].end(); iter++)
 			{
-				insert(*iter,*val);
+				insert(*iter,*val); // inserts all values into the new hashmap
 				val++;
 				this->m_count--;
 			}
 		}
 	}
 
+	// constructor with a forward list
 	template<typename K, typename V>
 	HashMap<K,V>::HashMap() : HashTable<K>()
 	{
-		m_vMirror = new std::forward_list<V>[this->m_tableSize];
+		m_vMirror = new std::forward_list<V>[this->m_tableSize]; 
 	}
 	
+	// destructor
 	template<typename K, typename V>
 	HashMap<K,V>::~HashMap()
 	{
-		delete[] m_vMirror;
+		delete[] m_vMirror; // deallocates the forward list
 		m_vMirror = nullptr;
 	}
 
+	// inserts a new element with a key value pair into the hashmap
 	template<typename K, typename V>
 	bool HashMap<K, V>::insert(const K& key, const V& value)
 	{
 		if (HashTable<K>::find(key))
-			return false;
+			return false; // returns false if the value already exists
 
 		unsigned int vHash = this->hash(key);
-		this->m_table[vHash].emplace_front(key);
-		m_vMirror[vHash].emplace_front(value);
+		this->m_table[vHash].emplace_front(key); // insert the new key to the front of the key list
+		m_vMirror[vHash].emplace_front(value); // insert the new value to the front of the value list
 
 		this->m_count++;
 
 		if (this->getLoadFactor() >= this->m_MAX_FACTOR)
 		{
-			rehash();
+			rehash(); // call the rehash function if the load factor exceeds 0.6
 		}
 
-		return true;
+		return true; // return true if the insertion was successful
 	}
 
+	// search the hashmap with the passed in key
 	template<typename K, typename V>
 	V& HashMap<K, V>::search(const K& key)
 	{
-		if (!HashTable<K>::find(key))
+		if (!HashTable<K>::find(key)) // throw an exception if the key was not found
 			throw std::exception();
 
 		unsigned int hashVal = this->hash(key);
 		auto val = m_vMirror[hashVal].begin();
 
+		// iterate over the table to find the value
 		for (auto finder = this->m_table[hashVal].begin(); finder != this->m_table[hashVal].end(); finder++)
 		{
 			if (*finder == key)
 			{
-				return *val;
+				return *val; // return the found value
 			}
 
-			val++;
+			val++; // increase the value iterator
 		}
 
 
-		return *(this->m_vMirror[hashVal].begin());
+		return *(this->m_vMirror[hashVal].begin()); // return the first key's value otherwise
 	}
 
+	// remove a key from the hashmap if it exists
 	template<typename K, typename V>
 	bool HashMap<K, V>::remove(const K& key)
 	{
@@ -113,7 +145,7 @@ namespace tacl
 
 		for (auto finder = this->m_table[hashVal].begin(); finder != this->m_table[hashVal].end(); finder++)
 		{
-			if (*finder == key)
+			if (*finder == key) // if found
 			{
 				this->m_count--;
 				this->m_table[hashVal].remove(key);
@@ -125,22 +157,24 @@ namespace tacl
 			val++;
 		}
 
-		return exists;
+		return exists; // return true if found, false if not
 	}
 
+	// get the current size of the hashMap
 	template<typename K, typename V>
 	unsigned int HashMap<K, V>::size()
 	{
 		return this->m_count;
 	}
 
+	// get the current bucket count (table size)
 	template<typename K, typename V>
 	unsigned int HashMap<K, V>::bucketCount()
 	{
 		return this->m_tableSize;
 	}
 
-
+	
 	unsigned int getStringData(const std::string& value, std::vector<std::string>& vec, HashMap<std::string,tacl::UnorderedSet<unsigned int>>& table)
 	{
 		std::istringstream iss(value);
